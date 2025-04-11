@@ -1,1 +1,0 @@
-pöst numero un
