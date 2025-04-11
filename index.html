@@ -1,0 +1,18 @@
+---
+layout: default
+show_lotus: true
+---
+
+<h2 style="text-align: center; font-family: 'Cormorant Garamond', serif; font-weight: 400; margin-bottom: 1.5rem; color: var(--rust-red);">Selected Signals</h2>
+
+<div class="latest-posts">
+    {% for post in site.posts limit:3 %}
+    <div class="post-card">
+        <div class="post-card-content">
+            <h3 class="post-title"><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h3>
+            <p class="post-excerpt">{{ post.excerpt | strip_html | truncatewords: 25 }}</p>
+            <p class="post-meta">{{ post.date | date: "%B %-d, %Y" }}</p>
+        </div>
+    </div>
+    {% endfor %}
+</div>

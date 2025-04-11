@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if page.title %}{{ page.title }} | {% endif %}{{ site.title }}</title>
+    <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
+</head>
+<body>
+    <div class="static-overlay"></div>
+    
+    {% include header.html %}
+    
+    {% if page.show_lotus %}
+    <div class="lotus-container">
+        <div class="lotus">
+            <div class="petals">
+                <div class="petal" style="--rotation: 0deg;"></div>
+                <div class="petal" style="--rotation: 72deg;"></div>
+                <div class="petal" style="--rotation: 144deg;"></div>
+                <div class="petal" style="--rotation: 216deg;"></div>
+                <div class="petal" style="--rotation: 288deg;"></div>
+            </div>
+            <div class="center"></div>
+        </div>
+        <div class="waves">
+            <div class="wave"></div>
+            <div class="wave"></div>
+            <div class="wave"></div>
+        </div>
+    </div>
+    {% endif %}
+    
+    <div class="content">
+        {{ content }}
+    </div>
+    
+    {% include footer.html %}
+    
+    <svg width="0" height="0">
+        <filter id="turbulence">
+            <feTurbulence baseFrequency="0.01" numOctaves="3" result="turbulence" />
+            <feDisplacementMap in="SourceGraphic" in2="turbulence" scale="10" />
+        </filter>
+    </svg>
+</body>
+</html>

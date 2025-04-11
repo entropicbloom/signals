@@ -1,0 +1,17 @@
+---
+layout: default
+title: Entries
+---
+
+<h1 class="archive-title">All Entries</h1>
+
+<ul class="archive-list">
+    {% for post in site.posts %}
+    <li class="archive-item">
+        <h2 class="post-title"><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h2>
+        <p class="post-meta">{{ post.date | date: "%B %-d, %Y" }}</p>
+        <p class="post-excerpt">{{ post.excerpt | strip_html | truncatewords: 50 }}</p>
+        <a href="{{ post.url | relative_url }}" style="color: var(--rust-red); text-decoration: none;">Read more →</a>
+    </li>
+    {% endfor %}
+</ul>
