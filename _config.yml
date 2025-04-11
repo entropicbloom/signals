@@ -1,8 +1,8 @@
 
 title: Entropic Bloom
 description: some ideas emerging from the static
-baseurl: "" # the subpath of your site, e.g. /blog
-url: "" # the base hostname & protocol for your site
+baseurl: "/signals" # the subpath of your site, e.g. /blog
+url: "https://entropicbloom.github.io" # the base hostname & protocol for your site
 
 # Build settings
 markdown: kramdown
