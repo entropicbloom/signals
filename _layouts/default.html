@@ -38,7 +38,7 @@
     {% include footer.html %}
     
     <svg width="0" height="0">
-        <filter id="turbulence">
+        <filter id="turbulence" x="-50%" y="-50%" width="200%" height="200%">
             <feTurbulence baseFrequency="0.01" numOctaves="3" result="turbulence" />
             <feDisplacementMap in="SourceGraphic" in2="turbulence" scale="10" />
         </filter>
