@@ -334,6 +334,10 @@ nav a:hover::after {
     color: var(--rust-red);
 }
 
+.post-title a {
+    color: inherit;
+}
+
 .post-excerpt {
     font-size: 0.9rem;
     color: #666;
@@ -507,4 +511,9 @@ footer {
     100% {
         transform: translateX(-50%) rotate(360deg);
     }
+}
+
+.post-card a {
+    text-decoration: none;
+    color: inherit;
 }
