@@ -1,6 +1,7 @@
 ---
 layout: post
-title: "Ethical considerations about conscious AI systems should depend on valence"
+title: "AI Systems as Moral Subjects"
+subtitle: "A pragmatic approach to AI ethics requires prioritizing valence over discussions about consciousness level."
 date: 2023-06-07
 ---
 
