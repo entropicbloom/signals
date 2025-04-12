@@ -1,4 +1,4 @@
- ---
+---
 layout: post # Or another layout if you prefer, though 'post' might not be fully utilized
 title: "Your Catchy Title Here"
 subtitle: "An interesting subtitle for the external piece"
