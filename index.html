@@ -7,7 +7,7 @@ show_title: true
 <h2 style="text-align: center; font-family: 'Cormorant Garamond', serif; font-weight: 400; margin-bottom: 1.5rem; color: var(--rust-red);">Selected Signals</h2>
 
 <div class="latest-posts">
-    {% for post in site.posts limit:3 %}
+    {% for post in site.posts limit:4 %}
     <div class="post-card">
         <div class="post-card-content">
             <h3 class="post-title">
@@ -17,7 +17,13 @@ show_title: true
                 </a>
             </h3>
             <p class="post-excerpt">{{ post.excerpt | strip_html | truncatewords: 25 }}</p>
-            <p class="post-meta">{{ post.date | date: "%B %-d, %Y" }}</p>
+            <p class="post-meta">
+              {% if post.status == 'ongoing' %}
+                Ongoing
+              {% else %}
+                {{ post.date | date: "%B %-d, %Y" }}
+              {% endif %}
+            </p>
         </div>
     </div>
     {% endfor %}
