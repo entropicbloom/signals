@@ -6,7 +6,7 @@
         <a href="#">About</a>
         <a href="#">Contact</a>
     </nav>
-    {% if page.url == '/' %}
+    {% if page.show_title %}
     <h1 class="blog-title">{{ site.title }}</h1>
     <p class="tagline">{{ site.description }}</p>
     {% endif %}
