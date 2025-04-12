@@ -92,6 +92,8 @@ nav a:hover::after {
     justify-content: center;
     align-items: center;
     overflow: hidden;
+    mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, black 80%, transparent 100%); /* For Safari/WebKit */
 }
 
 .lotus {
