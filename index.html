@@ -16,7 +16,13 @@ show_title: true
                     {{ post.title }}
                 </a>
             </h3>
-            <p class="post-excerpt">{{ post.excerpt | strip_html | truncatewords: 25 }}</p>
+            <p class="post-excerpt">
+              {% if post.subtitle %}
+                {{ post.subtitle }}
+              {% else %}
+                {{ post.excerpt | strip_html | truncatewords: 25 }}
+              {% endif %}
+            </p>
             <p class="post-meta">
               {% if post.status == 'ongoing' %}
                 Ongoing

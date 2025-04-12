@@ -15,7 +15,13 @@ title: Entries
             </a>
         </h2>
         <p class="post-meta">{{ post.date | date: "%B %-d, %Y" }}</p>
-        <p class="post-excerpt">{{ post.excerpt | strip_html | truncatewords: 50 }}</p>
+        <p class="post-excerpt">
+          {% if post.subtitle %}
+            {{ post.subtitle }}
+          {% else %}
+            {{ post.excerpt | strip_html | truncatewords: 50 }}
+          {% endif %}
+        </p>
         <a href="{% if post.external_url %}{{ post.external_url }}{% else %}{{ post.url | relative_url }}{% endif %}"
            {% if post.external_url %}target="_blank" rel="noopener noreferrer"{% endif %}
            style="color: var(--rust-red); text-decoration: none;">
