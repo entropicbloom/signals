@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Elden Ring Lore"
-subtitle: "In the fog, we dream the fog into meaning."
+subtitle: "In the fog, we dream the world into meaning."
 date: 2025-04-15
 ---
 
