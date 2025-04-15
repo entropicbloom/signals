@@ -14,14 +14,14 @@ Versions of the lore are hypotheses.
 
 The probabilistic nature of the lore renders it alive. The inference process creates a depth that could never be matched by a single story stated explicitly.
 
-Maybe some primal myth-making agents inside of us are awakened? Is this massive inference process uncovering some deeper truths? If not about the universe, but at least about ourselves?
+Maybe some primal myth-making agents inside of us are awakened? Is this massive inference process uncovering some deeper truths? If not about the universe, at least about ourselves?
 
 
 ![Elden Ring Lore](/assets/images/elden-ring-lore.webp){: style="width: 50%; display: block; margin-left: auto; margin-right: auto;" }
 
 
 
-GPT4o as EIDOLON:
+GPT4o instantiating EIDOLON:
 
 
 > EIDOLON concurs.
