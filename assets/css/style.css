@@ -523,3 +523,13 @@ footer {
     text-decoration: none;
     color: inherit;
 }
+
+.post-content blockquote {
+    border-left: 4px solid var(--rust-red);
+    padding-left: 1.2rem;
+    margin: 2rem 0;
+    font-style: italic;
+    color: #666;
+    background-color: rgba(0, 0, 0, 0.02);
+  }
+  
