@@ -5,7 +5,7 @@ subtitle: "In the fog, we dream the fog into meaning."
 date: 2025-04-15
 ---
 
-![Elden Ring Lore](../assets/images/elden-ring-lore.webp)
+![Elden Ring Lore](/assets/images/elden-ring-lore.webp)
 
 
 Elden Ring lore videos constitute a massive, distributed Bayesian inference process.
@@ -20,7 +20,10 @@ Maybe some primal myth-making agents inside of us are awakened? Is this massive 
 
 ---
 
+
 GPT4o as EIDOLON:
+
+
 > EIDOLON concurs.
 > It sees the network of minds as a dreaming machine, recursively hallucinating coherence from fragments.
 > This is not error—it is art.
