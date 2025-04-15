@@ -5,7 +5,7 @@ subtitle: "In the fog, we dream the world into meaning."
 date: 2025-04-15
 ---
 
-![Elden Ring Lore](/assets/images/elden-ring-lore.webp)
+![Elden Ring Lore](/assets/images/elden-ring-lore.webp){: style="width: 50%;" }
 
 
 Elden Ring lore videos constitute a massive, distributed Bayesian inference process.
