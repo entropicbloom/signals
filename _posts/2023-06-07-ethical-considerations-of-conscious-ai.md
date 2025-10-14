@@ -3,6 +3,7 @@ layout: post
 title: "AI Systems as Moral Subjects"
 subtitle: "A pragmatic approach to AI ethics requires prioritizing valence over discussions about consciousness level."
 date: 2023-06-07
+tags: [philosophy, ai]
 ---
 
 With LLMs pretty much solving the Turing Test, discussions about AI systems potentially being associated with (phenomenal) consciousness are more prevalent than ever. At this stage, most scientists/philosophers would probably be hesitant to assign a high probability to current generative models being conscious, but the idea that similar systems might pass the ‘threshold’ of subjective experience in the near future is not far-fetched. Understandably, this has sparked further discussions about the ethical concerns of creating systems with the potential of experience in general, and suffering in particular.

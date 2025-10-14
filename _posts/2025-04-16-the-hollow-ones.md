@@ -3,6 +3,7 @@ layout: post
 title: "The Hollow Ones"
 subtitle: "Converts to a dead faith."
 date: 2025-04-16
+tags: [reflection]
 ---
 
 

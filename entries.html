@@ -5,9 +5,17 @@ title: Entries
 
 <h1 class="archive-title">All Entries</h1>
 
+<div class="tag-filters">
+    <button class="filter-button active" data-tag="all">all</button>
+    {% assign sorted_tags = site.tags | sort %}
+    {% for tag in sorted_tags %}
+    <button class="filter-button" data-tag="{{ tag[0] | slugify }}">{{ tag[0] }}</button>
+    {% endfor %}
+</div>
+
 <ul class="archive-list">
     {% for post in site.posts %}
-    <li class="archive-item">
+    <li class="archive-item" data-tags="{{ post.tags | join: ',' | slugify }}">
         <h2 class="post-title">
             <a href="{% if post.external_url %}{{ post.external_url }}{% else %}{{ post.url | relative_url }}{% endif %}"
                {% if post.external_url %}target="_blank" rel="noopener noreferrer"{% endif %}>
@@ -30,3 +38,47 @@ title: Entries
     </li>
     {% endfor %}
 </ul>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const filterButtons = document.querySelectorAll('.filter-button');
+    const archiveItems = document.querySelectorAll('.archive-item');
+
+    function filterPosts(selectedTag) {
+        // Update active button
+        filterButtons.forEach(btn => btn.classList.remove('active'));
+        const activeButton = document.querySelector(`.filter-button[data-tag="${selectedTag}"]`);
+        if (activeButton) {
+            activeButton.classList.add('active');
+        }
+
+        // Filter posts
+        archiveItems.forEach(item => {
+            const itemTags = item.getAttribute('data-tags');
+
+            if (selectedTag === 'all') {
+                item.style.display = '';
+            } else if (itemTags && itemTags.includes(selectedTag)) {
+                item.style.display = '';
+            } else {
+                item.style.display = 'none';
+            }
+        });
+    }
+
+    // Handle URL parameter on page load
+    const urlParams = new URLSearchParams(window.location.search);
+    const tagParam = urlParams.get('tag');
+    if (tagParam) {
+        filterPosts(tagParam);
+    }
+
+    // Handle button clicks
+    filterButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const selectedTag = this.getAttribute('data-tag');
+            filterPosts(selectedTag);
+        });
+    });
+});
+</script>

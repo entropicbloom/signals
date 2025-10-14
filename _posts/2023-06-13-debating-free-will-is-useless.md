@@ -3,6 +3,7 @@ layout: post
 title: "Debating Free Will is Useless"
 subtitle: "Free will as something that is fundamentally opposed to determinism is an incoherent concept."
 date: 2023-06-13
+tags: [philosophy]
 ---
 
 The question “Do we have free will?” (on its own) is a non-starter. Whether we possess such a thing as free will or not is entirely an issue of linguistics, and not of ontology. Arguing over whether this abstract concept is in fact part of our reality or not is a waste of time unless we nail down the exact definition we are talking about. I am not advocating for a taboo on this topic, but rather a shift of focus. Debates should revolve primarily around what definition of free will is the most useful to describe our world. Provided a concrete definition, answering the ontological question should, in most cases, be quite straightforward given our current understanding of the universe.
