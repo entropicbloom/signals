@@ -26,6 +26,9 @@ body {
     line-height: 1.6;
     overflow-x: hidden;
     position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
 body::before {
@@ -268,6 +271,7 @@ nav a:hover::after {
     margin: 0 auto;
     position: relative;
     z-index: 5;
+    flex: 1;
 }
 
 .intro {
