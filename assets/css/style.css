@@ -448,6 +448,10 @@ footer {
     border-bottom: none;
 }
 
+.archive-item .post-title a {
+    text-decoration: none;
+}
+
 @media (max-width: 768px) {
     .blog-title {
         font-size: 2.5rem;
@@ -531,5 +535,66 @@ footer {
     font-style: italic;
     color: #666;
     background-color: rgba(0, 0, 0, 0.02);
-  }
-  
+}
+
+/* Tags Styling */
+.post-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+}
+
+.post-tag {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 400;
+    color: var(--rust-red);
+    background-color: rgba(166, 69, 62, 0.1);
+    border-radius: 3px;
+    text-decoration: none;
+    text-transform: lowercase;
+    letter-spacing: 0.5px;
+    transition: all 0.2s ease;
+}
+
+.post-tag:hover {
+    background-color: var(--rust-red);
+    color: var(--aged-porcelain);
+}
+
+/* Tag Filters on Entries Page */
+.tag-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 2.5rem;
+    justify-content: center;
+}
+
+.filter-button {
+    padding: 0.5rem 1.25rem;
+    font-size: 0.85rem;
+    font-weight: 300;
+    font-family: 'Montserrat', sans-serif;
+    color: var(--rust-red);
+    background-color: transparent;
+    border: 1px solid rgba(166, 69, 62, 0.3);
+    border-radius: 4px;
+    cursor: pointer;
+    text-transform: lowercase;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+}
+
+.filter-button:hover {
+    background-color: rgba(166, 69, 62, 0.1);
+    border-color: var(--rust-red);
+}
+
+.filter-button.active {
+    background-color: var(--rust-red);
+    color: var(--aged-porcelain);
+    border-color: var(--rust-red);
+}
