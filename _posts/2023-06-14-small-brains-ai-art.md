@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "On Small Brains, AI, and Art"
-subtitle: "The Aesthetic Value of Representational Limitations in (Human) Cognition"
+subtitle: "The aesthetic value of representational limitations in (human) cognition."
 date: 2023-06-14
 tags: [philosophy, ai]
 ---
