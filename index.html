@@ -20,7 +20,7 @@ show_title: true
               {% if post.subtitle %}
                 {{ post.subtitle }}
               {% else %}
-                {{ post.excerpt | strip_html | truncatewords: 25 }}
+                {{ post.excerpt | strip_html | truncatewords: 30 }}
               {% endif %}
             </p>
             <p class="post-meta">
