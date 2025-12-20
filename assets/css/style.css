@@ -372,21 +372,6 @@ footer {
     margin: 0 auto;
 }
 
-.social-links {
-    margin-top: 1rem;
-}
-
-.social-links a {
-    display: inline-block;
-    margin: 0 0.5rem;
-    color: var(--muted-rose);
-    font-size: 1.2rem;
-    transition: color 0.3s ease;
-}
-
-.social-links a:hover {
-    color: var(--pomegranate);
-}
 
 /* Single Post Styles */
 .post-header {
