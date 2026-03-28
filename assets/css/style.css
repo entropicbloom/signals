@@ -333,22 +333,22 @@ nav a:hover::after {
     height: 100%;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='cardGrain'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23cardGrain)'/%3E%3C/svg%3E");
     pointer-events: none;
-    opacity: 0.05;
+    opacity: 0.12;
     z-index: 1;
     animation: cardStatic 9s infinite;
     transition: opacity 0.4s ease;
 }
 
 .post-card:hover::after {
-    opacity: 0.1;
+    opacity: 0.2;
 }
 
 @keyframes cardStatic {
-    0%, 100% { opacity: 0.05; }
-    18%       { opacity: 0.07; }
-    42%       { opacity: 0.04; }
-    67%       { opacity: 0.08; }
-    83%       { opacity: 0.05; }
+    0%, 100% { opacity: 0.12; }
+    18%       { opacity: 0.16; }
+    42%       { opacity: 0.10; }
+    67%       { opacity: 0.18; }
+    83%       { opacity: 0.13; }
 }
 
 .post-card-content {
