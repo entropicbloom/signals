@@ -3,7 +3,7 @@ layout: post
 title: "On Small Brains, AI, and Art"
 subtitle: "The aesthetic value of representational limitations in (human) cognition."
 date: 2023-06-14
-tags: [philosophy, ai]
+tags: [philosophy, ai, llms]
 ---
 
 We are arguably at a point in technological history where AI systems are at the verge of reaching the human brain in terms of complexity and representational / computational capacity. The exact number of parameters needed for an artificial neural network to match the brain’s complexity will be dependent on the relevant spatial scale that explains brain function (whether we need to describe the brain at the level of ion channels, neurons, or neuron populations to understand its dynamics). However, taking into account some uncertainty pertaining to the relevant spatial scale, I would say it is reasonable to assume that within the next couple of decades we will get there. (However, the following article will not depend on the exact timeline, as long as we get there at some point.)

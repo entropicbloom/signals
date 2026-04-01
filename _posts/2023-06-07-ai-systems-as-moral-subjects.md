@@ -3,7 +3,7 @@ layout: post
 title: "AI Systems as Moral Subjects"
 subtitle: "A pragmatic approach to AI ethics requires prioritizing valence over discussions about consciousness level."
 date: 2023-06-07
-tags: [philosophy, ai]
+tags: [philosophy, ai, llms]
 redirect_from:
   - /2023/06/07/ethical-considerations-of-conscious-ai/
 ---

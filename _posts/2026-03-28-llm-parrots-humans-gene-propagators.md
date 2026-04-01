@@ -3,7 +3,7 @@ layout: post
 title: "If LLMs are Just Parrots, Humans are Just Gene Propagators"
 subtitle: "Pointing at a loss function is not a valid substitute for an actual engagement with the behaviors and internal representations a model has developed."
 date: 2026-03-28
-tags: [philosophy, ai]
+tags: [philosophy, ai, llms]
 ---
 
 **The phrase**: "LLMs cannot be truly intelligent / conscious because they are *just* next-token predictors".
