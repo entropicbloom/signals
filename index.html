@@ -7,7 +7,9 @@ show_title: true
 <h2 style="text-align: center; font-family: 'Cormorant Garamond', serif; font-weight: 400; margin-bottom: 1.5rem; color: var(--rust-red);">Selected Signals</h2>
 
 <div class="latest-posts">
-    {% for post in site.posts limit:4 %}
+    {% assign selected_slugs = "consciousness-is-unambiguous,the-hollow-ones,elden-ring-lore,ai-systems-as-moral-subjects" | split: "," %}
+    {% for slug in selected_slugs %}
+    {% assign post = site.posts | where_exp: "p", "p.url contains slug" | first %}
     <div class="post-card">
         <div class="post-card-content">
             <h3 class="post-title">
