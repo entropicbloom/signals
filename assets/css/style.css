@@ -99,24 +99,21 @@ nav a:hover::after {
     -webkit-mask-image: linear-gradient(to bottom, black 80%, transparent 100%); /* For Safari/WebKit */
 }
 
+.hero-field {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    pointer-events: none;
+}
+
 .lotus {
     position: relative;
     z-index: 3;
     width: 80%;
     max-width: 500px;
     height: 500px;
-    animation: pulse 8s infinite alternate;
-}
-
-@keyframes pulse {
-    0% {
-        transform: scale(0.98);
-        opacity: 0.8;
-    }
-    100% {
-        transform: scale(1.02);
-        opacity: 1;
-    }
 }
 
 .petals {
@@ -143,7 +140,6 @@ nav a:hover::after {
     left: -110px;
     transform: rotate(0deg);
     background: linear-gradient(45deg, var(--muted-rose), var(--faded-coral));
-    animation: float 10s infinite alternate;
 }
 
 .petal:nth-child(2) {
@@ -153,7 +149,6 @@ nav a:hover::after {
     left: -30px;
     transform: rotate(45deg);
     background: linear-gradient(45deg, var(--dusty-lavender), var(--muted-rose));
-    animation: float 12s infinite alternate-reverse;
 }
 
 .petal:nth-child(3) {
@@ -163,7 +158,6 @@ nav a:hover::after {
     left: 20px;
     transform: rotate(90deg);
     background: linear-gradient(45deg, var(--faded-coral), var(--muted-rose));
-    animation: float 9s infinite alternate;
 }
 
 .petal:nth-child(4) {
@@ -173,7 +167,6 @@ nav a:hover::after {
     right: -50px;
     transform: rotate(135deg);
     background: linear-gradient(45deg, var(--muted-rose), var(--dusty-lavender));
-    animation: float 11s infinite alternate-reverse;
 }
 
 .petal:nth-child(5) {
@@ -183,7 +176,6 @@ nav a:hover::after {
     right: -80px;
     transform: rotate(180deg);
     background: linear-gradient(45deg, var(--dusty-lavender), var(--faded-coral));
-    animation: float 10.5s infinite alternate;
 }
 
 .center {
@@ -197,27 +189,6 @@ nav a:hover::after {
     border-radius: 50%;
     z-index: 5;
     box-shadow: 0 0 40px rgba(166, 69, 62, 0.3);
-    animation: glow 8s infinite alternate;
-}
-
-@keyframes float {
-    0% {
-        transform-origin: center bottom;
-        transform: rotate(var(--rotation)) translate(0, 0);
-    }
-    100% {
-        transform-origin: center bottom;
-        transform: rotate(var(--rotation)) translate(5px, 5px);
-    }
-}
-
-@keyframes glow {
-    0% {
-        box-shadow: 0 0 20px rgba(166, 69, 62, 0.3);
-    }
-    100% {
-        box-shadow: 0 0 40px rgba(166, 69, 62, 0.5);
-    }
 }
 
 .static-overlay {
@@ -230,16 +201,6 @@ nav a:hover::after {
     pointer-events: none;
     opacity: 0.15;
     z-index: 4;
-    animation: staticFlicker 10s infinite;
-}
-
-@keyframes staticFlicker {
-    0%, 100% {
-        opacity: 0.15;
-    }
-    50% {
-        opacity: 0.2;
-    }
 }
 
 .blog-title {
@@ -455,54 +416,6 @@ footer {
     
     .intro p {
         font-size: 1rem;
-    }
-}
-
-.waves {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 50%;
-    overflow: hidden;
-    opacity: 0.1;
-    pointer-events: none;
-    mask-image: linear-gradient(to top, black 60%, transparent 100%);
-    -webkit-mask-image: linear-gradient(to top, black 60%, transparent 100%);
-}
-
-.wave {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 200%;
-    height: 100%;
-    background: linear-gradient(to bottom, transparent, var(--dusty-lavender));
-    border-radius: 38% 42% 40% 44% / 28% 32% 30% 34%;
-    animation: waveAnimation 20s infinite linear;
-}
-
-.wave:nth-child(2) {
-    background: linear-gradient(to bottom, transparent, var(--muted-rose));
-    border-radius: 42% 38% 44% 40% / 32% 28% 34% 30%;
-    animation: waveAnimation 15s infinite linear;
-    animation-direction: reverse;
-    opacity: 0.5;
-}
-
-.wave:nth-child(3) {
-    background: linear-gradient(to bottom, transparent, var(--faded-coral));
-    border-radius: 40% 44% 38% 42% / 30% 34% 28% 32%;
-    animation: waveAnimation 25s infinite linear;
-    opacity: 0.3;
-}
-
-@keyframes waveAnimation {
-    0% {
-        transform: translateX(0) rotate(0);
-    }
-    100% {
-        transform: translateX(-50%) rotate(360deg);
     }
 }
 
