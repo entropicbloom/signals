@@ -3,3 +3,7 @@ Gemfile.lock
 .bundle/
 vendor/
 _site/
+
+# Local scratch previews (generated)
+hero-preview.html
+lotus-svg-preview.html
