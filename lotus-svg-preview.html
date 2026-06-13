@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>lotus: CSS vs SVG</title>
+<link rel="stylesheet" href="assets/css/style.css">
+<style>
+  body { background: var(--aged-porcelain); }
+  .compare {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 2rem 1rem 5rem;
+  }
+  .cell { text-align: center; }
+  .cell h3 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 300;
+    letter-spacing: 2px;
+    text-transform: lowercase;
+    color: var(--rust-red);
+    margin-bottom: 1rem;
+  }
+  /* a plain stage so the flower can overflow and be seen in full */
+  .stage {
+    width: 760px;
+    max-width: 92vw;
+    height: 740px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: visible;
+  }
+  /* reuse the real .lotus, but drop the mobile transform for a fair compare */
+  .stage .lotus { transform: none; }
+  .svg-lotus { width: 752px; height: 719px; max-width: 100%; overflow: visible; }
+</style>
+</head>
+<body>
+  <div class="compare">
+
+    <div class="cell">
+      <h3>css (current)</h3>
+      <div class="stage">
+        <div class="lotus">
+          <div class="petals">
+            <div class="petal" style="--rotation: 0deg;"></div>
+            <div class="petal" style="--rotation: 72deg;"></div>
+            <div class="petal" style="--rotation: 144deg;"></div>
+            <div class="petal" style="--rotation: 216deg;"></div>
+            <div class="petal" style="--rotation: 288deg;"></div>
+          </div>
+          <div class="center"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cell">
+      <h3>svg (new)</h3>
+      <div class="stage">
+        <svg class="svg-lotus" viewBox="-342 -170 752 719" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <!-- same organic edge warp as the site's #turbulence, plus the
+                 petals' faint box-shadow as a drop shadow -->
+            <filter id="petalFx" x="-40%" y="-40%" width="180%" height="180%">
+              <feTurbulence baseFrequency="0.01" numOctaves="3" result="turb"/>
+              <feDisplacementMap in="SourceGraphic" in2="turb" scale="10" result="disp"/>
+              <feDropShadow dx="0" dy="0" stdDeviation="7.5" flood-color="black" flood-opacity="0.1"/>
+            </filter>
+            <filter id="centerGlow" x="-80%" y="-80%" width="260%" height="260%">
+              <feDropShadow dx="0" dy="0" stdDeviation="20" flood-color="#a6453e" flood-opacity="0.3"/>
+            </filter>
+
+            <!-- 45deg gradients (bottom-left -> top-right), per petal -->
+            <linearGradient id="g1" x1="0" y1="1" x2="1" y2="0">
+              <stop offset="0" stop-color="#d79f9f"/><stop offset="1" stop-color="#f2b8a4"/>
+            </linearGradient>
+            <linearGradient id="g2" x1="0" y1="1" x2="1" y2="0">
+              <stop offset="0" stop-color="#c8b6d8"/><stop offset="1" stop-color="#d79f9f"/>
+            </linearGradient>
+            <linearGradient id="g3" x1="0" y1="1" x2="1" y2="0">
+              <stop offset="0" stop-color="#f2b8a4"/><stop offset="1" stop-color="#d79f9f"/>
+            </linearGradient>
+            <linearGradient id="g4" x1="0" y1="1" x2="1" y2="0">
+              <stop offset="0" stop-color="#d79f9f"/><stop offset="1" stop-color="#c8b6d8"/>
+            </linearGradient>
+            <linearGradient id="g5" x1="0" y1="1" x2="1" y2="0">
+              <stop offset="0" stop-color="#c8b6d8"/><stop offset="1" stop-color="#f2b8a4"/>
+            </linearGradient>
+
+            <radialGradient id="centerGrad">
+              <stop offset="0" stop-color="#a32c32"/>
+              <stop offset="0.7" stop-color="#a6453e"/>
+            </radialGradient>
+
+            <!-- petal silhouette: 220x240 teardrop matching the CSS
+                 border-radius 50% 50% 50% 50% / 80% 80% 20% 20% -->
+            <path id="petal" d="M 110 0
+              A 110 192 0 0 1 220 192
+              A 110 48 0 0 1 110 240
+              A 110 48 0 0 1 0 192
+              A 110 192 0 0 1 110 0 Z"/>
+          </defs>
+
+          <g opacity="0.9">
+            <g transform="rotate(0 0 120) translate(-110 -120)" filter="url(#petalFx)">
+              <use href="#petal" fill="url(#g1)"/></g>
+            <g transform="rotate(72 80 160) translate(-30 -80)" filter="url(#petalFx)">
+              <use href="#petal" fill="url(#g2)"/></g>
+            <g transform="rotate(144 130 240) translate(20 0)" filter="url(#petalFx)">
+              <use href="#petal" fill="url(#g3)"/></g>
+            <g transform="rotate(216 -60 190) translate(-170 -50)" filter="url(#petalFx)">
+              <use href="#petal" fill="url(#g4)"/></g>
+            <g transform="rotate(288 -30 120) translate(-140 -120)" filter="url(#petalFx)">
+              <use href="#petal" fill="url(#g5)"/></g>
+          </g>
+
+          <circle cx="0" cy="0" r="60" fill="url(#centerGrad)" filter="url(#centerGlow)"/>
+        </svg>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- #turbulence filter the CSS .petal references -->
+  <svg width="0" height="0">
+    <filter id="turbulence">
+      <feTurbulence baseFrequency="0.01" numOctaves="3" result="turbulence" />
+      <feDisplacementMap in="SourceGraphic" in2="turbulence" scale="10" />
+    </filter>
+  </svg>
+</body>
+</html>
