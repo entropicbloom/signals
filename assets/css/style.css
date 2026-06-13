@@ -398,14 +398,9 @@ footer {
     }
     
     .lotus {
-        max-width: 300px;
-        height: 300px;
+        transform: scale(0.6);
     }
-    
-    .petal {
-        transform: rotate(var(--rotation)) scale(0.7);
-    }
-    
+
     .content {
         padding: 2rem 1.5rem;
     }
