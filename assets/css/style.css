@@ -403,7 +403,7 @@ footer {
     }
     
     .petal {
-        transform: scale(0.7);
+        transform: rotate(var(--rotation)) scale(0.7);
     }
     
     .content {
