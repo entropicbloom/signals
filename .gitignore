@@ -3,6 +3,7 @@ Gemfile.lock
 .bundle/
 vendor/
 _site/
+serve.sh
 
 # Local scratch previews (generated)
 hero-preview.html
