@@ -10,6 +10,36 @@
     --rust-red: #a6453e;
     --blood-red: #9c464a;
     --pomegranate: #a32c32;
+
+    --bg: var(--aged-porcelain);
+    --text: #444;
+    --text-muted: #666;
+    --text-faint: #999;
+    --surface: rgba(255, 255, 255, 0.6);
+    --border: rgba(0, 0, 0, 0.1);
+    --quote-bg: rgba(0, 0, 0, 0.02);
+    --accent-soft: rgba(166, 69, 62, 0.1);
+    --accent-line: rgba(166, 69, 62, 0.3);
+    --shadow: rgba(0, 0, 0, 0.05);
+}
+
+:root[data-theme="dark"] {
+    --bg: #1d1814;
+    --text: #d8cfc2;
+    --text-muted: #b3a899;
+    --text-faint: #8a8073;
+    --surface: rgba(255, 244, 232, 0.045);
+    --border: rgba(216, 207, 194, 0.14);
+    --quote-bg: rgba(255, 244, 232, 0.03);
+    --rust-red: #c9685c;
+    --pomegranate: #c0454b;
+    --accent-soft: rgba(201, 104, 92, 0.16);
+    --accent-line: rgba(201, 104, 92, 0.38);
+    --shadow: rgba(0, 0, 0, 0.45);
+}
+
+:root[data-theme="dark"] .lotus {
+    opacity: 0.62;
 }
 
 * {
@@ -19,11 +49,12 @@
 }
 
 body {
-    background-color: var(--aged-porcelain);
-    color: #444;
+    background-color: var(--bg);
+    color: var(--text);
     font-family: 'Montserrat', sans-serif;
     font-weight: 300;
     line-height: 1.6;
+    transition: background-color 0.4s ease, color 0.4s ease;
     overflow-x: hidden;
     position: relative;
     min-height: 100vh;
@@ -72,6 +103,25 @@ nav a:hover {
 
 nav a:hover::after {
     width: 100%;
+}
+
+.theme-toggle {
+    margin: 0 1rem;
+    padding: 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--rust-red);
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 300;
+    text-transform: lowercase;
+    letter-spacing: 1px;
+    font-size: 0.9rem;
+    transition: color 0.3s ease;
+}
+
+.theme-toggle:hover {
+    color: var(--pomegranate);
 }
 
 .lotus-container {
@@ -188,7 +238,7 @@ nav a:hover::after {
 
 .tagline {
     font-size: 1rem;
-    color: #666;
+    color: var(--text-muted);
     letter-spacing: 1px;
     max-width: 600px;
     margin: 0 auto 2rem;
@@ -216,7 +266,7 @@ nav a:hover::after {
     margin-bottom: 1.5rem;
     font-size: 1.2rem;
     line-height: 1.8;
-    color: #666;
+    color: var(--text-muted);
     font-family: 'Cormorant Garamond', serif;
     font-weight: 400;
 }
@@ -239,16 +289,16 @@ nav a:hover::after {
 }
 
 .post-card {
-    background-color: rgba(255, 255, 255, 0.6);
+    background-color: var(--surface);
     border-radius: 4px;
     overflow: hidden;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.4s ease;
     position: relative;
 }
 
 .post-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 10px 20px var(--shadow);
 }
 
 .post-card::before {
@@ -274,13 +324,13 @@ nav a:hover::after {
 
 .post-excerpt {
     font-size: 0.9rem;
-    color: #666;
+    color: var(--text-muted);
     margin-bottom: 1rem;
 }
 
 .post-meta {
     font-size: 0.8rem;
-    color: #999;
+    color: var(--text-faint);
 }
 
 footer {
@@ -293,7 +343,7 @@ footer {
 
 .footer-text {
     font-size: 0.8rem;
-    color: #999;
+    color: var(--text-faint);
     max-width: 600px;
     margin: 0 auto;
 }
@@ -319,7 +369,7 @@ footer {
     font-family: 'Cormorant Garamond', serif;
     font-size: 1.2rem;
     line-height: 1.8;
-    color: #444;
+    color: var(--text);
 }
 
 .post-content p {
@@ -355,7 +405,7 @@ footer {
 
 .archive-item {
     margin-bottom: 2rem;
-    border-bottom: 1px solid rgba(0,0,0,0.1);
+    border-bottom: 1px solid var(--border);
     padding-bottom: 2rem;
 }
 
@@ -395,8 +445,8 @@ footer {
     padding-left: 1.2rem;
     margin: 2rem 0;
     font-style: italic;
-    color: #666;
-    background-color: rgba(0, 0, 0, 0.02);
+    color: var(--text-muted);
+    background-color: var(--quote-bg);
 }
 
 /* Tags Styling */
@@ -413,7 +463,7 @@ footer {
     font-size: 0.75rem;
     font-weight: 400;
     color: var(--rust-red);
-    background-color: rgba(166, 69, 62, 0.1);
+    background-color: var(--accent-soft);
     border-radius: 3px;
     text-decoration: none;
     text-transform: lowercase;
@@ -442,7 +492,7 @@ footer {
     font-family: 'Montserrat', sans-serif;
     color: var(--rust-red);
     background-color: transparent;
-    border: 1px solid rgba(166, 69, 62, 0.3);
+    border: 1px solid var(--accent-line);
     border-radius: 4px;
     cursor: pointer;
     text-transform: lowercase;
@@ -451,7 +501,7 @@ footer {
 }
 
 .filter-button:hover {
-    background-color: rgba(166, 69, 62, 0.1);
+    background-color: var(--accent-soft);
     border-color: var(--rust-red);
 }
 

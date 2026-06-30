@@ -2,6 +2,7 @@
     <nav>
         <a href="{{ '/' | relative_url }}">Home</a>
         <a href="{{ '/entries' | relative_url }}">Entries</a>
+        <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle dark mode">dark</button>
     </nav>
     {% if page.show_title %}
     <h1 class="blog-title">{{ site.title }}</h1>
