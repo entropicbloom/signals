@@ -21,6 +21,9 @@ A personal blog at [entropicbloom.com](https://entropicbloom.com). The tagline i
 | `_includes/header.html` | Nav and site title |
 | `index.html` | Home page — shows 4 most recent posts as cards, lotus enabled |
 | `entries.html` | Full archive with tag filtering (JS) |
+| `gallery.html` | Image gallery at `/gallery/` — tag filters, lightbox |
+| `_data/gallery.yml` | Gallery images: order, tags, dimensions, alt text |
+| `_data/gallery_tags.yml` | Gallery filter buttons and their labels |
 | `_posts/` | Markdown posts |
 | `_config.yml` | Jekyll config — permalink format is `/:year/:month/:day/:title/` |
 
@@ -62,6 +65,27 @@ status: ongoing  # optional — shows "Ongoing" instead of date
 external_url: https://...  # optional — card links externally, opens in new tab
 ---
 ```
+
+## Adding a gallery image
+
+Two WebP files per image in `assets/images/gallery/` — `<name>.webp` capped at
+1600px for the lightbox, `<name>-thumb.webp` capped at 760px for the grid:
+
+```
+magick in.png -resize '1600x1600>' -strip -quality 82 assets/images/gallery/<name>.webp
+magick in.png -resize '760x760>'   -strip -quality 78 assets/images/gallery/<name>-thumb.webp
+```
+
+Then add an entry to `_data/gallery.yml` with `file` (no extension), `tags`,
+the original `w`/`h`, and `alt`. Order in that file is display order; the page
+deals items across the columns row by row, so entries that sit together in the
+file sit together on the page. An image with no tags shows only under "all".
+
+## Local previews
+
+`_layouts/default.html` loads the stylesheet via `absolute_url`, so a plain
+`jekyll build` served statically pulls the **live production CSS**. Use
+`./serve.sh` (or `jekyll serve`) to preview, or local CSS changes won't show up.
 
 ## Development branch convention
 
