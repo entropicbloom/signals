@@ -1,0 +1,10 @@
+# Filter buttons for the gallery, in display order. `slug` must match the
+# tags used in gallery.yml.
+- slug: abstract
+  label: abstract
+- slug: elden-brain
+  label: elden brain
+- slug: noisy
+  label: noisy
+- slug: reality-plus
+  label: reality+

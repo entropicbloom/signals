@@ -1,0 +1,118 @@
+---
+layout: default
+title: AI Slop?
+permalink: /ai-slop/
+---
+
+<h1 class="archive-title">AI Slop?</h1>
+
+<p class="gallery-intro">Images made by machines, kept because something in them held. The question mark is doing real work.</p>
+
+<div class="tag-filters">
+    <button class="filter-button active" data-tag="all">all</button>
+    {% for tag in site.data.gallery_tags %}
+    <button class="filter-button" data-tag="{{ tag.slug }}">{{ tag.label }}</button>
+    {% endfor %}
+</div>
+
+<div class="gallery-grid">
+    {% for img in site.data.gallery %}
+    <figure class="gallery-item" data-tags="{{ img.tags | join: ',' }}">
+        <button class="gallery-trigger" type="button"
+                data-full="{{ '/assets/images/gallery/' | append: img.file | append: '.webp' | relative_url }}"
+                data-caption="{{ img.alt | escape }}">
+            <img src="{{ '/assets/images/gallery/' | append: img.file | append: '-thumb.webp' | relative_url }}"
+                 alt="{{ img.alt | escape }}" width="{{ img.w }}" height="{{ img.h }}" loading="lazy" decoding="async">
+        </button>
+    </figure>
+    {% endfor %}
+</div>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Image viewer" hidden>
+    <button class="lightbox-close" type="button" aria-label="Close">close</button>
+    <button class="lightbox-nav lightbox-prev" type="button" aria-label="Previous image">&#8592;</button>
+    <button class="lightbox-nav lightbox-next" type="button" aria-label="Next image">&#8594;</button>
+    <figure class="lightbox-figure">
+        <img class="lightbox-image" id="lightbox-image" src="" alt="">
+        <figcaption class="lightbox-caption" id="lightbox-caption"></figcaption>
+    </figure>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const filterButtons = document.querySelectorAll('.filter-button');
+    const items = Array.from(document.querySelectorAll('.gallery-item'));
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImage = document.getElementById('lightbox-image');
+    const lightboxCaption = document.getElementById('lightbox-caption');
+    let current = -1;
+
+    function visibleItems() {
+        return items.filter(item => item.style.display !== 'none');
+    }
+
+    function filterImages(selectedTag) {
+        filterButtons.forEach(btn => btn.classList.remove('active'));
+        const activeButton = document.querySelector(`.filter-button[data-tag="${selectedTag}"]`);
+        if (activeButton) {
+            activeButton.classList.add('active');
+        }
+
+        items.forEach(item => {
+            const itemTags = (item.getAttribute('data-tags') || '').split(',');
+            item.style.display = (selectedTag === 'all' || itemTags.includes(selectedTag)) ? '' : 'none';
+        });
+    }
+
+    function show(index) {
+        const visible = visibleItems();
+        if (!visible.length) return;
+        current = (index + visible.length) % visible.length;
+        const trigger = visible[current].querySelector('.gallery-trigger');
+        lightboxImage.src = trigger.getAttribute('data-full');
+        lightboxImage.alt = trigger.getAttribute('data-caption');
+        lightboxCaption.textContent = trigger.getAttribute('data-caption');
+    }
+
+    function openLightbox(item) {
+        show(visibleItems().indexOf(item));
+        lightbox.hidden = false;
+        document.body.classList.add('lightbox-open');
+    }
+
+    function closeLightbox() {
+        lightbox.hidden = true;
+        lightboxImage.src = '';
+        document.body.classList.remove('lightbox-open');
+    }
+
+    items.forEach(item => {
+        item.querySelector('.gallery-trigger').addEventListener('click', () => openLightbox(item));
+    });
+
+    lightbox.querySelector('.lightbox-close').addEventListener('click', closeLightbox);
+    lightbox.querySelector('.lightbox-prev').addEventListener('click', () => show(current - 1));
+    lightbox.querySelector('.lightbox-next').addEventListener('click', () => show(current + 1));
+    lightbox.addEventListener('click', function (event) {
+        if (event.target === lightbox) closeLightbox();
+    });
+
+    document.addEventListener('keydown', function (event) {
+        if (lightbox.hidden) return;
+        if (event.key === 'Escape') closeLightbox();
+        if (event.key === 'ArrowLeft') show(current - 1);
+        if (event.key === 'ArrowRight') show(current + 1);
+    });
+
+    const tagParam = new URLSearchParams(window.location.search).get('tag');
+    if (tagParam) {
+        filterImages(tagParam);
+    }
+
+    filterButtons.forEach(button => {
+        button.addEventListener('click', function () {
+            filterImages(this.getAttribute('data-tag'));
+        });
+    });
+});
+</script>
