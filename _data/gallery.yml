@@ -1,71 +1,15 @@
-# Images for the "AI Slop?" gallery. Files live in assets/images/gallery/
-# as <file>.webp (full) and <file>-thumb.webp (grid). Order here is display order.
+# Images for the gallery at /gallery/. Files live in assets/images/gallery/
+# as <file>.webp (full) and <file>-thumb.webp (grid). Order here is display
+# order — the page deals items across the columns row by row, so entries that
+# sit together in this file sit together on the page. Grouped by tag, with the
+# untagged ones last; they show only under "all".
 
-- file: elden-lattice-colonnade
-  tags: [elden-brain]
-  w: 1024
-  h: 1024
-  alt: A luminous branching lattice rising through a flooded stone colonnade
-
-- file: noisy-lotus-grain
-  tags: [noisy]
-  w: 1024
-  h: 1024
-  alt: A pale lotus surfacing through heavy sepia grain
-
-- file: abstract-tunnel-figure
-  tags: [abstract]
-  w: 1536
-  h: 1024
-  alt: A lone figure walking toward a distant lit city at the mouth of a tunnel
-
-- file: river-dusk
-  tags: [reality-plus]
-  w: 1448
-  h: 1086
-  alt: A whale surfacing in a river at dusk, the town on the far bank unbothered
-
-- file: stray-ashen-knight
-  tags: []
-  w: 1536
-  h: 1024
-  alt: An armoured figure resting among embers, ruined spires on the horizon
-
-- file: elden-profile-dawn
-  tags: [elden-brain]
-  w: 1024
-  h: 1024
-  alt: A head in profile drawn as a root system of light, over broken columns at dawn
-
+# abstract
 - file: abstract-smear
   tags: [abstract]
   w: 1024
   h: 1024
   alt: A blurred knot of amber and black, smeared like a wave folded in on itself
-
-- file: noisy-figure
-  tags: [noisy]
-  w: 1024
-  h: 1536
-  alt: A human silhouette burned white into a field of television static
-
-- file: elden-spired-city
-  tags: [elden-brain]
-  w: 1024
-  h: 1024
-  alt: An overgrown cathedral city of glass and stone, threaded with rose windows
-
-- file: river-evening
-  tags: [reality-plus]
-  w: 1458
-  h: 1079
-  alt: A whale's back breaking the same river under evening cloud
-
-- file: stray-flame-lotus-figure
-  tags: []
-  w: 1024
-  h: 1536
-  alt: A figure curled inside a lotus drawn in thin lines of fire
 
 - file: abstract-red-turbulence
   tags: [abstract]
@@ -73,65 +17,36 @@
   h: 1536
   alt: Red and orange turbulence in fine contour lines, with a single dark eye
 
-- file: elden-profile-arcade
-  tags: [elden-brain]
-  w: 1024
-  h: 1024
-  alt: A profile of filament light inside a ruined arcade, mist along the floor
-
-- file: noisy-lotus-red
-  tags: [noisy]
-  w: 1536
-  h: 1024
-  alt: A lotus floating on a churning red ground of static
-
-- file: stray-eclipse-sea
-  tags: []
-  w: 1024
-  h: 1024
-  alt: An eclipse ring over a teal sea, smaller moons descending toward the water
-
-- file: elden-rooted-head
-  tags: [elden-brain]
-  w: 1024
-  h: 1024
-  alt: A head dissolving into roots and branches against a starfield and circuit grid
-
-- file: river-noon
-  tags: [reality-plus]
-  w: 1448
-  h: 1086
-  alt: A whale breaching in the river at midday, a dolphin alongside it, gravel shallows in front
-
 - file: abstract-ember-line
   tags: [abstract]
   w: 1024
   h: 1024
   alt: A single ember line describing a wave that opens into a lotus
 
-- file: elden-glyph-ruin
-  tags: [elden-brain]
-  w: 1536
-  h: 1024
-  alt: A glowing glyph set into the wall of a collapsed temple
-
-- file: stray-white-line
-  tags: []
+- file: abstract-white-line
+  tags: [abstract]
   w: 1024
   h: 1024
   alt: The same wave and lotus in a thin white line, dispersing into dust
 
-- file: elden-golden-spires
+# elden brain
+- file: elden-lattice-colonnade
   tags: [elden-brain]
   w: 1024
   h: 1024
-  alt: Golden spires strung with filaments of light above still teal water
+  alt: A luminous branching lattice rising through a flooded stone colonnade
 
-- file: river-afterglow
-  tags: [reality-plus]
-  w: 1457
-  h: 1079
-  alt: A whale submerged just under the river surface, afterglow banked along the cloud line
+- file: elden-profile-dawn
+  tags: [elden-brain]
+  w: 1024
+  h: 1024
+  alt: A head in profile drawn as a root system of light, over broken columns at dawn
+
+- file: elden-profile-arcade
+  tags: [elden-brain]
+  w: 1024
+  h: 1024
+  alt: A profile of filament light inside a ruined arcade, mist along the floor
 
 - file: elden-profile-portico
   tags: [elden-brain]
@@ -139,14 +54,107 @@
   h: 1024
   alt: A profile of branching light beside a mossy portico and a seated statue
 
-- file: stray-dim-cathedral
-  tags: []
+- file: elden-rooted-head
+  tags: [elden-brain]
+  w: 1024
+  h: 1024
+  alt: A head dissolving into roots and branches against a starfield and circuit grid
+
+- file: elden-spired-city
+  tags: [elden-brain]
+  w: 1024
+  h: 1024
+  alt: An overgrown cathedral city of glass and stone, threaded with rose windows
+
+- file: elden-golden-spires
+  tags: [elden-brain]
+  w: 1024
+  h: 1024
+  alt: Golden spires strung with filaments of light above still teal water
+
+- file: elden-glyph-ruin
+  tags: [elden-brain]
   w: 1536
   h: 1024
-  alt: A dim cathedral interior, one small figure and a faint tree of light
+  alt: A glowing glyph set into the wall of a collapsed temple
 
 - file: elden-dark-hall
   tags: [elden-brain]
   w: 1536
   h: 1024
   alt: A near-black hall with embers guttering under a vaulted arch
+
+# noisy
+- file: noisy-lotus-grain
+  tags: [noisy]
+  w: 1024
+  h: 1024
+  alt: A pale lotus surfacing through heavy sepia grain
+
+- file: noisy-lotus-red
+  tags: [noisy]
+  w: 1536
+  h: 1024
+  alt: A lotus floating on a churning red ground of static
+
+- file: noisy-figure
+  tags: [noisy]
+  w: 1024
+  h: 1536
+  alt: A human silhouette burned white into a field of television static
+
+# reality+
+- file: river-dusk
+  tags: [reality-plus]
+  w: 1448
+  h: 1086
+  alt: A whale surfacing in a river at dusk, the town on the far bank unbothered
+
+- file: river-evening
+  tags: [reality-plus]
+  w: 1458
+  h: 1079
+  alt: A whale's back breaking the same river under evening cloud
+
+- file: river-noon
+  tags: [reality-plus]
+  w: 1448
+  h: 1086
+  alt: A whale breaching in the river at midday, a dolphin alongside it, gravel shallows in front
+
+- file: river-afterglow
+  tags: [reality-plus]
+  w: 1457
+  h: 1079
+  alt: A whale submerged just under the river surface, afterglow banked along the cloud line
+
+# untagged
+- file: stray-ashen-knight
+  tags: []
+  w: 1536
+  h: 1024
+  alt: An armoured figure resting among embers, ruined spires on the horizon
+
+- file: stray-tunnel-figure
+  tags: []
+  w: 1536
+  h: 1024
+  alt: A lone figure walking toward a distant lit city at the mouth of a tunnel
+
+- file: stray-dim-cathedral
+  tags: []
+  w: 1536
+  h: 1024
+  alt: A dim cathedral interior, one small figure and a faint tree of light
+
+- file: stray-flame-lotus-figure
+  tags: []
+  w: 1024
+  h: 1536
+  alt: A figure curled inside a lotus drawn in thin lines of fire
+
+- file: stray-eclipse-sea
+  tags: []
+  w: 1024
+  h: 1024
+  alt: An eclipse ring over a teal sea, smaller moons descending toward the water

@@ -512,14 +512,6 @@ footer {
 }
 
 /* Gallery */
-.gallery-intro {
-    text-align: center;
-    max-width: 34rem;
-    margin: -2rem auto 2.5rem;
-    font-size: 0.9rem;
-    color: var(--text-muted);
-}
-
 /* Breaks out of the 800px .content column — a gallery wants the extra width. */
 .gallery-grid {
     position: relative;
@@ -528,6 +520,19 @@ footer {
     margin-left: max(-575px, calc(-50vw + 1.5rem));
     column-count: 3;
     column-gap: 1.25rem;
+}
+
+/* Set once the script has dealt the items into columns row by row. */
+.gallery-grid.is-dealt {
+    column-count: initial;
+    display: flex;
+    align-items: flex-start;
+    gap: 1.25rem;
+}
+
+.gallery-column {
+    flex: 1;
+    min-width: 0;
 }
 
 .gallery-item {
@@ -587,25 +592,16 @@ body.lightbox-open {
     max-width: 100%;
     max-height: 100%;
     display: flex;
-    flex-direction: column;
     align-items: center;
-    gap: 0.9rem;
+    justify-content: center;
 }
 
 .lightbox-image {
     max-width: 100%;
-    max-height: calc(100vh - 9rem);
+    max-height: calc(100vh - 7rem);
     object-fit: contain;
     border-radius: 3px;
     box-shadow: 0 20px 50px var(--shadow);
-}
-
-.lightbox-caption {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1rem;
-    text-align: center;
-    color: var(--text-muted);
-    max-width: 40rem;
 }
 
 .lightbox-close,

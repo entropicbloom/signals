@@ -1,12 +1,12 @@
 ---
 layout: default
-title: AI Slop?
-permalink: /ai-slop/
+title: Gallery
+permalink: /gallery/
+redirect_from:
+  - /ai-slop/
 ---
 
-<h1 class="archive-title">AI Slop?</h1>
-
-<p class="gallery-intro">Images made by machines, kept because something in them held. The question mark is doing real work.</p>
+<h1 class="archive-title">Gallery</h1>
 
 <div class="tag-filters">
     <button class="filter-button active" data-tag="all">all</button>
@@ -15,7 +15,7 @@ permalink: /ai-slop/
     {% endfor %}
 </div>
 
-<div class="gallery-grid">
+<div class="gallery-grid" id="gallery-grid">
     {% for img in site.data.gallery %}
     <figure class="gallery-item" data-tags="{{ img.tags | join: ',' }}">
         <button class="gallery-trigger" type="button"
@@ -34,48 +34,58 @@ permalink: /ai-slop/
     <button class="lightbox-nav lightbox-next" type="button" aria-label="Next image">&#8594;</button>
     <figure class="lightbox-figure">
         <img class="lightbox-image" id="lightbox-image" src="" alt="">
-        <figcaption class="lightbox-caption" id="lightbox-caption"></figcaption>
     </figure>
 </div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const filterButtons = document.querySelectorAll('.filter-button');
-    const items = Array.from(document.querySelectorAll('.gallery-item'));
+    const grid = document.getElementById('gallery-grid');
+    const items = Array.from(grid.querySelectorAll('.gallery-item'));
     const lightbox = document.getElementById('lightbox');
     const lightboxImage = document.getElementById('lightbox-image');
-    const lightboxCaption = document.getElementById('lightbox-caption');
+    let shown = items;
+    let columns = 0;
     let current = -1;
 
-    function visibleItems() {
-        return items.filter(item => item.style.display !== 'none');
+    function columnCount() {
+        if (window.matchMedia('(max-width: 560px)').matches) return 1;
+        if (window.matchMedia('(max-width: 900px)').matches) return 2;
+        return 3;
     }
 
-    function filterImages(selectedTag) {
-        filterButtons.forEach(btn => btn.classList.remove('active'));
-        const activeButton = document.querySelector(`.filter-button[data-tag="${selectedTag}"]`);
-        if (activeButton) {
-            activeButton.classList.add('active');
-        }
-
-        items.forEach(item => {
+    // Deal the items across columns round-robin so neighbours in the data file
+    // land side by side. CSS columns would run them top-to-bottom instead,
+    // which scatters each tag group down a single column.
+    function layout(tag) {
+        columns = columnCount();
+        shown = items.filter(item => {
             const itemTags = (item.getAttribute('data-tags') || '').split(',');
-            item.style.display = (selectedTag === 'all' || itemTags.includes(selectedTag)) ? '' : 'none';
+            return tag === 'all' || itemTags.includes(tag);
         });
+
+        grid.textContent = '';
+        grid.classList.add('is-dealt');
+        const lanes = [];
+        for (let i = 0; i < columns; i++) {
+            const lane = document.createElement('div');
+            lane.className = 'gallery-column';
+            grid.appendChild(lane);
+            lanes.push(lane);
+        }
+        shown.forEach((item, i) => lanes[i % columns].appendChild(item));
     }
 
     function show(index) {
-        const visible = visibleItems();
-        if (!visible.length) return;
-        current = (index + visible.length) % visible.length;
-        const trigger = visible[current].querySelector('.gallery-trigger');
+        if (!shown.length) return;
+        current = (index + shown.length) % shown.length;
+        const trigger = shown[current].querySelector('.gallery-trigger');
         lightboxImage.src = trigger.getAttribute('data-full');
         lightboxImage.alt = trigger.getAttribute('data-caption');
-        lightboxCaption.textContent = trigger.getAttribute('data-caption');
     }
 
     function openLightbox(item) {
-        show(visibleItems().indexOf(item));
+        show(shown.indexOf(item));
         lightbox.hidden = false;
         document.body.classList.add('lightbox-open');
     }
@@ -84,6 +94,20 @@ document.addEventListener('DOMContentLoaded', function () {
         lightbox.hidden = true;
         lightboxImage.src = '';
         document.body.classList.remove('lightbox-open');
+    }
+
+    function filterImages(selectedTag) {
+        filterButtons.forEach(btn => btn.classList.remove('active'));
+        const activeButton = document.querySelector(`.filter-button[data-tag="${selectedTag}"]`);
+        if (activeButton) {
+            activeButton.classList.add('active');
+        }
+        layout(selectedTag);
+    }
+
+    function activeTag() {
+        const active = document.querySelector('.filter-button.active');
+        return active ? active.getAttribute('data-tag') : 'all';
     }
 
     items.forEach(item => {
@@ -104,15 +128,20 @@ document.addEventListener('DOMContentLoaded', function () {
         if (event.key === 'ArrowRight') show(current + 1);
     });
 
-    const tagParam = new URLSearchParams(window.location.search).get('tag');
-    if (tagParam) {
-        filterImages(tagParam);
-    }
-
     filterButtons.forEach(button => {
         button.addEventListener('click', function () {
             filterImages(this.getAttribute('data-tag'));
         });
     });
+
+    let resizeTimer;
+    window.addEventListener('resize', function () {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(function () {
+            if (columnCount() !== columns) layout(activeTag());
+        }, 150);
+    });
+
+    filterImages(new URLSearchParams(window.location.search).get('tag') || 'all');
 });
 </script>
