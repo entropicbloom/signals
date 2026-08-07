@@ -135,6 +135,12 @@
   h: 1024
   alt: An armoured figure resting among embers, ruined spires on the horizon
 
+- file: stray-smoking-knight
+  tags: []
+  w: 1536
+  h: 1024
+  alt: A knight in ember-cracked plate sitting out a cigarette over a burnt plain, sword planted beside them
+
 - file: stray-tunnel-figure
   tags: []
   w: 1536
