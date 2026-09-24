@@ -20,7 +20,7 @@ A personal blog at [entropicbloom.com](https://entropicbloom.com). The tagline i
 | `_layouts/post.html` | Single post template |
 | `_includes/header.html` | Nav and site title |
 | `index.html` | Home page — shows 4 most recent posts as cards, lotus enabled |
-| `entries.html` | Full archive with tag filtering (JS) |
+| `entries.html` | Full archive with signal/static mode filtering (JS) |
 | `gallery.html` | Image gallery at `/gallery/` — tag filters, lightbox |
 | `_data/gallery.yml` | Gallery images: order, tags, dimensions, alt text |
 | `_data/gallery_tags.yml` | Gallery filter buttons and their labels |
@@ -60,7 +60,7 @@ layout: post
 title: "Post Title"
 subtitle: "Optional — used as excerpt on cards and archive instead of auto-generated one"
 date: YYYY-MM-DD
-tags: [tag1, tag2]
+mode: signal  # required — signal (arguments, analysis) or static (moods, lore, fragments)
 status: ongoing  # optional — shows "Ongoing" instead of date
 external_url: https://...  # optional — card links externally, opens in new tab
 ---

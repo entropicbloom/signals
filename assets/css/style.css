@@ -449,33 +449,6 @@ footer {
     background-color: var(--quote-bg);
 }
 
-/* Tags Styling */
-.post-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-top: 0.75rem;
-}
-
-.post-tag {
-    display: inline-block;
-    padding: 0.25rem 0.75rem;
-    font-size: 0.75rem;
-    font-weight: 400;
-    color: var(--rust-red);
-    background-color: var(--accent-soft);
-    border-radius: 3px;
-    text-decoration: none;
-    text-transform: lowercase;
-    letter-spacing: 0.5px;
-    transition: all 0.2s ease;
-}
-
-.post-tag:hover {
-    background-color: var(--rust-red);
-    color: var(--aged-porcelain);
-}
-
 /* Tag Filters on Entries Page */
 .tag-filters {
     display: flex;
@@ -483,6 +456,16 @@ footer {
     gap: 0.75rem;
     margin-bottom: 2.5rem;
     justify-content: center;
+}
+
+.filter-description {
+    min-height: 1.5em;
+    margin: -1.5rem 0 2rem;
+    text-align: center;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 1.05rem;
+    color: var(--text-muted);
 }
 
 .filter-button {

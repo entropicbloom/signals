@@ -3,7 +3,7 @@ layout: post
 title: "You Can't Steer a Lookup Table"
 subtitle: "Interventional inference and Hoel's disproof of LLM consciousness"
 date: 2026-09-23
-tags: [consciousness, llms]
+mode: signal
 ---
 
 Erik Hoel's ["A Disproof of Large Language Model Consciousness"](https://arxiv.org/html/2512.12802v3#S2) argues from what a scientific theory of consciousness must be: falsifiable and non-trivial. Theories are tested by comparing their predictions, made from a system's internals, with inferences drawn from its behavior. For an LLM, Hoel constructs a chain of systems with identical input/output behavior: the LLM, a single-layer network, and finally a lookup table. A theory that calls the LLM conscious but not the table changes its verdict while the evidence stays the same, and is falsified. A theory that calls both conscious is judging by behavior alone, and is trivial. Either way, no scientific theory can credit LLMs with consciousness, while humans escape the trap, he argues, because they learn continually.
