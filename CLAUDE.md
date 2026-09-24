@@ -9,7 +9,7 @@ A personal blog at [entropicbloom.com](https://entropicbloom.com). The tagline i
 - **Jekyll** static site generator
 - **Pure CSS** — no Tailwind, no preprocessors, just `assets/css/style.css` with CSS custom properties
 - **Vanilla JS** — inline scripts only, no build step, no bundler
-- `jekyll-seo-tag` and `jekyll-redirect-from` plugins
+- `jekyll-seo-tag`, `jekyll-redirect-from`, `jekyll-feed`, and `jekyll-sitemap` plugins
 
 ## Key files
 
@@ -26,6 +26,7 @@ A personal blog at [entropicbloom.com](https://entropicbloom.com). The tagline i
 | `_data/gallery_tags.yml` | Gallery filter buttons and their labels |
 | `_posts/` | Markdown posts |
 | `_config.yml` | Jekyll config — permalink format is `/:year/:month/:day/:title/` |
+| `llms.txt`, `robots.txt` | Agent/crawler entry points, generated from posts. Feed (`/feed.xml`) and `/sitemap.xml` come from `jekyll-feed` and `jekyll-sitemap` |
 
 ## Design system
 

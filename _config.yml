@@ -1,5 +1,6 @@
 title: Entropic Bloom
 description: some ideas emerging from the static
+author: Francesco Lässig
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://entropicbloom.com" # the base hostname & protocol for your site
 
@@ -17,3 +18,24 @@ exclude:
 plugins:
   - jekyll-seo-tag
   - jekyll-redirect-from
+  - jekyll-feed
+  - jekyll-sitemap
+
+# Kept out of sitemap.xml: scratch previews, and pages deliberately left out of the nav
+defaults:
+  - scope:
+      path: "lotus-svg-preview.html"
+    values:
+      sitemap: false
+  - scope:
+      path: "gallery.html"
+    values:
+      sitemap: false
+  - scope:
+      path: "dark-souls-benchmark"
+    values:
+      sitemap: false
+  - scope:
+      path: "pokemon-llm-survey"
+    values:
+      sitemap: false
