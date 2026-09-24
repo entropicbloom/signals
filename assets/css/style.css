@@ -370,6 +370,7 @@ footer {
     font-size: 1.2rem;
     line-height: 1.8;
     color: var(--text);
+    overflow-wrap: break-word;
 }
 
 .post-content p {
@@ -447,6 +448,130 @@ footer {
     font-style: italic;
     color: var(--text-muted);
     background-color: var(--quote-bg);
+}
+
+/* Hard/real/core problem diagrams */
+.problem-figure {
+    margin: 2rem auto 2.5rem;
+    color: var(--text-muted);
+}
+
+.problem-diagram {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.25rem;
+}
+
+.problem-icon {
+    width: 4.5rem;
+    height: 4.5rem;
+    flex-shrink: 0;
+}
+
+.problem-link {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+    width: 11rem;
+    color: var(--muted-rose);
+}
+
+.problem-label {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 300;
+    font-size: 0.85rem;
+    color: var(--text);
+    white-space: nowrap;
+}
+
+.problem-arrow {
+    width: 5rem;
+    height: 0.8rem;
+}
+
+.qualia-wheel {
+    width: 4.75rem;
+    height: 4.75rem;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background:
+        radial-gradient(circle, rgba(140, 132, 138, 0.9) 0%, rgba(140, 132, 138, 0.35) 38%, transparent 70%),
+        conic-gradient(hsl(0 70% 60%), hsl(50 72% 60%), hsl(100 55% 55%), hsl(170 55% 58%), hsl(220 62% 62%), hsl(290 55% 64%), hsl(0 70% 60%));
+    filter: saturate(0.85);
+}
+
+.problem-summary {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem 1.5rem;
+    max-width: 44rem;
+}
+
+.problem-summary-top {
+    grid-column: 1 / -1;
+    justify-self: center;
+}
+
+.problem-summary .problem-diagram {
+    gap: 0.75rem;
+}
+
+.problem-summary .problem-link {
+    width: 8.5rem;
+}
+
+.problem-summary .problem-label {
+    font-size: 0.75rem;
+}
+
+.problem-summary .problem-icon {
+    width: 3.5rem;
+    height: 3.5rem;
+}
+
+.problem-summary .qualia-wheel {
+    width: 3.75rem;
+    height: 3.75rem;
+}
+
+.problem-title {
+    margin: 0 0 0.75rem;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.2rem;
+    line-height: 1.3;
+    color: var(--rust-red);
+    text-align: center;
+}
+
+.problem-title span {
+    display: block;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.problem-figure figcaption {
+    grid-column: 1 / -1;
+    font-size: 1rem;
+    font-style: italic;
+    text-align: center;
+    color: var(--text-muted);
+}
+
+@media (max-width: 600px) {
+    .problem-summary {
+        grid-template-columns: 1fr;
+    }
+
+    .problem-link {
+        width: 8rem;
+    }
+
+    .problem-label {
+        font-size: 0.75rem;
+    }
 }
 
 /* Tag Filters on Entries Page */

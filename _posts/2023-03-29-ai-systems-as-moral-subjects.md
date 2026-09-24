@@ -2,10 +2,11 @@
 layout: post
 title: "AI Systems as Moral Patients"
 subtitle: "A pragmatic approach to AI ethics requires prioritizing valence over discussions about consciousness level."
-date: 2023-06-07
+date: 2023-03-29
 mode: signal
 redirect_from:
   - /2023/06/07/ethical-considerations-of-conscious-ai/
+  - /2023/06/07/ai-systems-as-moral-subjects/
 ---
 
 With LLMs pretty much solving the Turing Test, discussions about AI systems potentially being associated with (phenomenal) consciousness are more prevalent than ever. At this stage, most scientists/philosophers would probably be hesitant to assign a high probability to current generative models being conscious, but the idea that similar systems might pass the ‘threshold’ of subjective experience in the near future is not far-fetched. Understandably, this has sparked further discussions about the ethical concerns of creating systems with the potential of experience in general, and suffering in particular.
@@ -34,3 +35,5 @@ If we understood the neural/computational/physical mechanism for valence, we cou
 I believe these considerations should be a motivation for consciousness researchers to focus on the problem of valence. Even in the absence of conscious AI systems, valence is arguably the most ethically relevant dimension of consciousness, and yet major theories of consciousness do not seem to put any emphasis on it.
 
 (Please note that none of this addresses the risks to humans. Existential risks are not mitigated by making happy AI.)
+
+*Originally published on [Medium](https://entropicbloom.medium.com/ethical-considerations-of-conscious-ai-systems-should-depend-on-valence-41c0989e553).*
