@@ -14,6 +14,9 @@ exclude:
   - Gemfile.lock
   - node_modules
   - vendor
+  - CLAUDE.md
+  - README.md
+  - build-hero-preview.sh
 
 plugins:
   - jekyll-seo-tag
