@@ -1,0 +1,22 @@
+---
+layout: null
+sitemap: false
+---
+# {{ site.title }}
+
+> {{ site.description | capitalize }}. Essays by {{ site.author }} on philosophy of mind, consciousness, AI ethics, and adjacent ideas.
+
+Posts come in two modes. Signal posts are arguments and analysis; static posts are moods and fragments. Full post text is also available in the Atom feed at {{ "/feed.xml" | absolute_url }}.
+
+- [Home]({{ "/" | absolute_url }}): a few selected signal posts
+- [All entries]({{ "/entries/" | absolute_url }}): every post, filterable by mode
+{% assign signal_posts = site.posts | where: "mode", "signal" %}{% assign static_posts = site.posts | where: "mode", "static" %}
+## Signal
+{% for post in signal_posts %}
+- [{{ post.title }}]({% if post.external_url %}{{ post.external_url }}{% else %}{{ post.url | absolute_url }}{% endif %}): {{ post.subtitle | default: post.excerpt | strip_html | strip_newlines | truncatewords: 40 }} ({{ post.date | date: "%Y-%m-%d" }}{% if post.external_url %}{% if post.external_url contains "youtu" or post.external_url contains "vimeo.com" %}, video{% else %}, external site{% endif %}{% endif %})
+{%- endfor %}
+
+## Static
+{% for post in static_posts %}
+- [{{ post.title }}]({% if post.external_url %}{{ post.external_url }}{% else %}{{ post.url | absolute_url }}{% endif %}): {{ post.subtitle | default: post.excerpt | strip_html | strip_newlines | truncatewords: 40 }} ({{ post.date | date: "%Y-%m-%d" }})
+{%- endfor %}
