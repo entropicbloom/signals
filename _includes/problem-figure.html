@@ -1,0 +1,8 @@
+{% if include.problem == "all" %}<figure class="problem-figure problem-summary" role="img" aria-label="{{ include.caption }}">
+<div class="problem-summary-item problem-summary-top"><div class="problem-title">The Hard Problem of Consciousness<span>David Chalmers</span></div>{% include problem-diagram.html problem="hard" %}</div>
+<div class="problem-summary-item"><div class="problem-title">The Real Problem of Consciousness<span>Anil Seth</span></div>{% include problem-diagram.html problem="real" %}</div>
+<div class="problem-summary-item"><div class="problem-title">The Core Problem of Consciousness<span>Robert Chis-Ciure</span></div>{% include problem-diagram.html problem="core" %}</div>
+<figcaption>{{ include.caption }}</figcaption>
+</figure>{% else %}<figure class="problem-figure" role="img" aria-label="{{ include.alt }}">
+{% include problem-diagram.html problem=include.problem %}
+</figure>{% endif %}
