@@ -18,7 +18,7 @@ title: Entries
         <h2 class="post-title">
             <a href="{% if post.external_url %}{{ post.external_url }}{% else %}{{ post.url | relative_url }}{% endif %}"
                {% if post.external_url %}target="_blank" rel="noopener noreferrer"{% endif %}>
-                {{ post.title }}
+                {% include post-link-title.html title=post.title url=post.external_url %}
             </a>
         </h2>
         <p class="post-meta">{{ post.date | date: "%B %-d, %Y" }}</p>

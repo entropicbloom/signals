@@ -322,6 +322,17 @@ nav a:hover::after {
     color: inherit;
 }
 
+.link-marker-wrap {
+    white-space: nowrap;
+}
+
+.link-marker {
+    width: 0.62em;
+    height: 0.62em;
+    vertical-align: 0.05em;
+    opacity: 0.55;
+}
+
 .post-excerpt {
     font-size: 0.9rem;
     color: var(--text-muted);

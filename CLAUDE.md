@@ -62,7 +62,7 @@ subtitle: "Optional — used as excerpt on cards and archive instead of auto-gen
 date: YYYY-MM-DD
 mode: signal  # required — signal (arguments, analysis) or static (moods, fragments)
 status: ongoing  # optional — shows "Ongoing" instead of date
-external_url: https://...  # optional — card links externally, opens in new tab
+external_url: https://...  # optional — card links externally, opens in new tab, marked with an arrow (a play icon for YouTube/Vimeo)
 ---
 ```
 
