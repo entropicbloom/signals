@@ -34,3 +34,5 @@ If we understood the neural/computational/physical mechanism for valence, we cou
 I believe these considerations should be a motivation for consciousness researchers to focus on the problem of valence. Even in the absence of conscious AI systems, valence is arguably the most ethically relevant dimension of consciousness, and yet major theories of consciousness do not seem to put any emphasis on it.
 
 (Please note that none of this addresses the risks to humans. Existential risks are not mitigated by making happy AI.)
+
+*Originally published on [Medium](https://entropicbloom.medium.com/ethical-considerations-of-conscious-ai-systems-should-depend-on-valence-41c0989e553).*
