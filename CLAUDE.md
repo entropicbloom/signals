@@ -60,7 +60,7 @@ layout: post
 title: "Post Title"
 subtitle: "Optional — used as excerpt on cards and archive instead of auto-generated one"
 date: YYYY-MM-DD
-mode: signal  # required — signal (arguments, analysis) or static (moods, lore, fragments)
+mode: signal  # required — signal (arguments, analysis) or static (moods, fragments)
 status: ongoing  # optional — shows "Ongoing" instead of date
 external_url: https://...  # optional — card links externally, opens in new tab
 ---
