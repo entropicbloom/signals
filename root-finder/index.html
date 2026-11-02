@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
+<title>Finding the Root of a Chord</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<style>
+/* Watercolour technique from ambiguity-video/src/paint.tsx, muted palette. */
+* { box-sizing: border-box; }
+
+:root {
+  --paper: #f6f2e8;
+  --ink: #2f3a36;
+  --ink-soft: #6f766f;
+  --ink-faint: #b3ad9f;
+  --bar: #cfc6b3;
+  --on: #5b7b8c;      /* slate: chord tones */
+  --win: #a7782f;     /* ochre: the root */
+  --miss: #b0795a;
+}
+
+html, body { background: var(--paper); }
+body {
+  margin: 0;
+  color: var(--ink);
+  font-family: 'Crimson Pro', Georgia, serif;
+  min-height: 100vh;
+}
+
+#paper { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 0; pointer-events: none; }
+main { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; padding: 44px 44px 36px; }
+
+.head { text-align: center; font-size: 21px; margin-bottom: 22px; }
+
+.row { display: grid; grid-template-columns: 1fr 44px 1fr 56px 1fr; align-items: center; }
+.panel { display: flex; flex-direction: column; align-items: center; }
+.panel svg { width: 100%; max-width: 290px; height: auto; display: block; overflow: visible; mix-blend-mode: multiply; }
+.cap { margin-top: 4px; font-size: 14px; color: var(--ink-soft); min-height: 2.6em; text-align: center; }
+
+.op { font-size: 46px; color: var(--ink-faint); text-align: center; line-height: 1; padding-bottom: 2.6em; }
+.op small { display: block; font-size: 16px; font-style: italic; margin-bottom: 2px; }
+
+svg text { font-family: 'Crimson Pro', Georgia, serif; }
+
+.hit { fill: transparent; cursor: pointer; }
+.lbl { font-size: 11px; fill: var(--ink-faint); font-style: italic; pointer-events: none; }
+.lbl.on { fill: var(--ink); }
+.hnum { font-size: 10px; fill: var(--ink-faint); font-style: italic; }
+.hnum.lit { fill: var(--win); }
+.plbl { font-size: 11px; fill: var(--ink-soft); font-style: italic; }
+.plbl.win { fill: var(--win); }
+.big { font-size: 38px; fill: var(--ink); font-style: italic; }
+.pct { font-size: 15px; fill: var(--ink-soft); }
+.nlab { font-size: 10px; fill: var(--ink-faint); }
+.nname { font-size: 11px; fill: var(--win); font-style: italic; }
+
+.ladder-wrap { margin-top: 26px; }
+.ladder-wrap svg { width: 100%; height: auto; display: block; mix-blend-mode: multiply; overflow: visible; }
+.ladder-cap { text-align: center; font-size: 14px; color: var(--ink-soft); }
+
+.controls {
+  margin-top: 30px;
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px 28px;
+}
+.presets { display: flex; flex-wrap: wrap; gap: 2px; }
+.presets button {
+  background: none; border: none; border-radius: 4px; padding: 3px 9px; cursor: pointer;
+  font-family: 'Crimson Pro', Georgia, serif; font-style: italic; font-size: 18px; color: var(--ink-soft);
+}
+.presets button:hover { color: var(--ink); background: rgba(91,123,140,0.08); }
+.presets button.active { color: var(--on); text-decoration: underline; text-decoration-color: rgba(91,123,140,0.4); text-underline-offset: 4px; }
+.sliders { display: flex; gap: 22px; align-items: center; }
+.sl { display: flex; align-items: center; gap: 8px; color: var(--ink-soft); }
+.sl .sym { font-style: italic; font-size: 20px; color: var(--ink); }
+.sl input { width: 110px; accent-color: var(--on); }
+.sl .val { font-size: 16px; min-width: 2.2em; font-variant-numeric: tabular-nums; }
+
+@media (max-width: 760px) {
+  main { padding: 28px 16px; }
+  .row { grid-template-columns: 1fr; }
+  .op { padding: 2px 0 8px; }
+  .op.arrow span { display: inline-block; transform: rotate(90deg); }
+  .panel svg { max-width: 270px; }
+  .controls { flex-direction: column; align-items: flex-start; }
+  .sliders { flex-wrap: wrap; }
+}
+</style>
+</head>
+<body>
+
+<!-- shared filter definitions + paper -->
+<svg id="paper" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+  <defs id="defs"></defs>
+  <rect width="100%" height="100%" fill="#f6f2e8"/>
+  <rect width="100%" height="100%" fill="#000" filter="url(#paperGrain)" opacity="0.3"/>
+  <g id="washes" style="mix-blend-mode: multiply" opacity="0.28"></g>
+</svg>
+
+<main>
+  <div class="head tex" data-tex="\hat r \;=\; \arg\max_r \; \sum_k x_{r+k}\, t_k"></div>
+
+  <div class="row">
+    <div class="panel">
+      <svg id="svx" viewBox="0 0 240 240"></svg>
+      <div class="cap tex" data-tex="x \in \{0,1\}^{12}"></div>
+    </div>
+    <div class="op">⋆</div>
+    <div class="panel">
+      <svg id="svt" viewBox="0 0 240 240"></svg>
+      <div class="cap tex" data-tex="t_k = \sum_{n \le N} \tfrac{1}{n}\,\big[\,12\log_2 n \approx k \!\!\pmod{12}\big]"></div>
+    </div>
+    <div class="op arrow"><small>σ<sub>τ</sub></small><span>→</span></div>
+    <div class="panel">
+      <svg id="svp" viewBox="0 0 240 240"></svg>
+      <div class="cap tex" data-tex="p_r = \operatorname{softmax}_r\!\Big(\tfrac{1}{\tau}\textstyle\sum_k x_{r+k}\,t_k\Big)"></div>
+    </div>
+  </div>
+
+  <div class="ladder-wrap">
+    <svg id="svl" viewBox="0 0 760 118"></svg>
+    <div class="ladder-cap tex" data-tex="f_n = n \, f_{\hat r}, \qquad a_n = \tfrac{1}{n}"></div>
+  </div>
+
+  <div class="controls">
+    <div class="presets" id="presets"></div>
+    <div class="sliders">
+      <label class="sl"><span class="sym">N</span><input type="range" id="nIn" min="2" max="24" step="1" value="16"><span class="val" id="nVal">16</span></label>
+      <label class="sl"><span class="sym">τ</span><input type="range" id="tIn" min="0.1" max="2" step="0.05" value="0.5"><span class="val" id="tVal">0.50</span></label>
+    </div>
+  </div>
+</main>
+
+<script>
+const NS = 'http://www.w3.org/2000/svg';
+const C = {
+  ink: '#2f3a36', faint: '#b3ad9f', bar: '#cfc6b3',
+  on: '#5b7b8c', win: '#a7782f', miss: '#b0795a',
+  slate: '#9fb3bb', ochre: '#d9c08f', sage: '#b9c7b0'
+};
+
+/* ---- filters (ported from paint.tsx, scaled to these viewBoxes) ---- */
+function wash(id, seed, freq, warp, rim, pale) {
+  return `<filter id="${id}" x="-50%" y="-50%" width="200%" height="200%" color-interpolation-filters="sRGB">
+    <feTurbulence type="fractalNoise" baseFrequency="${freq}" numOctaves="4" seed="${seed}" result="warpNoise"/>
+    <feDisplacementMap in="SourceGraphic" in2="warpNoise" scale="${warp}" xChannelSelector="R" yChannelSelector="G" result="shape"/>
+    <feGaussianBlur in="shape" stdDeviation="${Math.max(0.4, rim * 0.15)}" result="soft"/>
+    <feMorphology in="soft" operator="erode" radius="${rim}" result="inner"/>
+    <feGaussianBlur in="inner" stdDeviation="${rim * 0.9}" result="innerSoft"/>
+    <feComposite in="soft" in2="innerSoft" operator="arithmetic" k2="1" k3="${-pale}" result="rimmed"/>
+    <feTurbulence type="fractalNoise" baseFrequency="0.55" numOctaves="2" seed="${seed + 7}" result="grain"/>
+    <feColorMatrix in="grain" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.7 0.45" result="grainAlpha"/>
+    <feComposite in="rimmed" in2="grainAlpha" operator="in" result="granulated"/>
+    <feTurbulence type="fractalNoise" baseFrequency="${freq * 2.5}" numOctaves="3" seed="${seed + 13}" result="pool"/>
+    <feColorMatrix in="pool" type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 1.8 -0.2" result="poolAlpha"/>
+    <feComposite in="granulated" in2="poolAlpha" operator="arithmetic" k1="0.9" k2="0.45"/>
+  </filter>`;
+}
+function ink(id, seed, freq, tremor) {
+  return `<filter id="${id}" x="-10%" y="-10%" width="120%" height="120%">
+    <feTurbulence type="fractalNoise" baseFrequency="${freq}" numOctaves="2" seed="${seed}" result="n"/>
+    <feDisplacementMap in="SourceGraphic" in2="n" scale="${tremor}" xChannelSelector="R" yChannelSelector="G" result="d"/>
+    <feTurbulence type="fractalNoise" baseFrequency="0.4" numOctaves="1" seed="${seed + 3}" result="n2"/>
+    <feDisplacementMap in="d" in2="n2" scale="0.6" xChannelSelector="R" yChannelSelector="G" result="d2"/>
+    <feGaussianBlur in="d2" stdDeviation="0.25"/>
+  </filter>`;
+}
+document.getElementById('defs').innerHTML =
+  wash('washBig', 3, 0.006, 90, 14, 0.75) +
+  wash('washShape', 11, 0.03, 9, 4, 0.72) +
+  wash('washBar', 17, 0.08, 4.5, 1.6, 0.5) +
+  wash('washDot', 21, 0.12, 3.5, 1.1, 0.45) +
+  ink('ink', 5, 0.08, 1.6) +
+  `<filter id="paperGrain" x="0" y="0" width="100%" height="100%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" seed="2" result="fine"/>
+    <feColorMatrix in="fine" type="matrix" values="0 0 0 0 0.25  0 0 0 0 0.22  0 0 0 0 0.15  0 0 0 -3 1.45" result="specks"/>
+    <feTurbulence type="fractalNoise" baseFrequency="0.0035" numOctaves="3" seed="9" result="coarse"/>
+    <feColorMatrix in="coarse" type="matrix" values="0 0 0 0 0.6  0 0 0 0 0.52  0 0 0 0 0.38  0 0 0 -1.6 0.95" result="blotch"/>
+    <feMerge><feMergeNode in="blotch"/><feMergeNode in="specks"/></feMerge>
+    <feComposite in2="SourceGraphic" operator="in"/>
+  </filter>`;
+
+function drawWashes() {
+  const w = innerWidth, h = innerHeight, g = document.getElementById('washes');
+  g.innerHTML = `<g filter="url(#washBig)">
+    <circle cx="${w * 0.04}" cy="${h * 0.97}" r="${Math.min(w, h) * 0.26}" fill="${C.slate}"/>
+    <circle cx="${w * 0.97}" cy="${h * 0.03}" r="${Math.min(w, h) * 0.22}" fill="${C.ochre}"/>
+    <circle cx="${w * 0.98}" cy="${h * 0.98}" r="${Math.min(w, h) * 0.14}" fill="${C.sage}"/>
+  </g>`;
+}
+drawWashes();
+addEventListener('resize', drawWashes);
+
+/* ---- model ---- */
+const NOTES = ['C','C♯','D','D♯','E','F','F♯','G','G♯','A','A♯','B'];
+const PRESETS = [
+  ['C', [0,4,7]], ['Am', [9,0,4]], ['C7', [0,4,7,10]], ['Cmaj7', [0,4,7,11]],
+  ['Dm7', [2,5,9,0]], ['C°', [0,3,6]], ['C+', [0,4,8]], ['Csus4', [0,5,7]],
+  ['C·E', [0,4]], ['C·G', [0,7]], ['∅', []]
+];
+
+let x = new Array(12).fill(0); [0,4,7].forEach(i => x[i] = 1);
+let N = 16, tau = 0.5;
+let t = [], firstN = [];
+let rot = 0, rotAnim = null;
+
+const mod = (a, m) => ((a % m) + m) % m;
+const cls = n => mod(Math.round(12 * Math.log2(n)), 12);
+const ang = i => i / 12 * 2 * Math.PI;
+const P = (a, r) => [120 + Math.sin(a) * r, 120 - Math.cos(a) * r];
+function el(tag, a, txt) {
+  const e = document.createElementNS(NS, tag);
+  for (const k in a) e.setAttribute(k, a[k]);
+  if (txt != null) e.textContent = txt;
+  return e;
+}
+const group = (parent, filter, extra = {}) => parent.appendChild(el('g', filter ? { filter: `url(#${filter})`, ...extra } : extra));
+const line = (g, x1, y1, x2, y2, stroke, w, extra = {}) =>
+  g.appendChild(el('line', { x1, y1, x2, y2, stroke, 'stroke-width': w, 'stroke-linecap': 'round', ...extra }));
+function inkRing(g, r) {
+  g.appendChild(el('circle', { cx: 120, cy: 120, r, fill: 'none', stroke: C.ink, 'stroke-width': 1.3, opacity: 0.75 }));
+  g.appendChild(el('circle', { cx: 120, cy: 120, r: r + 1.4, fill: 'none', stroke: C.ink, 'stroke-width': 0.5, opacity: 0.3 }));
+}
+
+function buildT() {
+  t = new Array(12).fill(0); firstN = new Array(12).fill(0);
+  for (let n = 1; n <= N; n++) {
+    const k = cls(n);
+    t[k] += 1 / n;
+    if (!firstN[k]) firstN[k] = n;
+  }
+}
+
+function model() {
+  const any = x.some(v => v);
+  const s = new Array(12).fill(0);
+  for (let r = 0; r < 12; r++) for (let k = 0; k < 12; k++) s[r] += x[mod(r + k, 12)] * t[k];
+  const m = Math.max(...s);
+  const e = s.map(v => Math.exp((v - m) / tau));
+  const z = e.reduce((a, b) => a + b, 0);
+  const p = any ? e.map(v => v / z) : new Array(12).fill(0);
+  return { any, p, win: any ? s.indexOf(m) : null };
+}
+
+/* ---- x : the chord ---- */
+function drawX() {
+  const sv = document.getElementById('svx'); sv.innerHTML = '';
+  const on = x.map((v, i) => v ? i : -1).filter(i => i >= 0);
+  if (on.length > 2) {
+    group(sv, 'washShape', { opacity: 0.55 }).appendChild(el('polygon', { fill: C.slate, points: on.map(i => P(ang(i), 80).join(',')).join(' ') }));
+  }
+  const gi = group(sv, 'ink');
+  inkRing(gi, 80);
+  if (on.length > 1) {
+    gi.appendChild(el('polygon', { fill: 'none', stroke: C.on, 'stroke-width': 0.9, opacity: 0.6, 'stroke-linejoin': 'round',
+      points: on.map(i => P(ang(i), 80).join(',')).join(' ') }));
+  }
+  const gd = group(sv, 'washDot');
+  for (let i = 0; i < 12; i++) {
+    const [cx, cy] = P(ang(i), 80);
+    if (x[i]) gd.appendChild(el('circle', { cx, cy, r: 8.5, fill: C.on, opacity: 0.95 }));
+    else gi.appendChild(el('circle', { cx, cy, r: 2, fill: C.ink, opacity: 0.45 }));
+    const [lx, ly] = P(ang(i), 102);
+    sv.appendChild(el('text', { class: 'lbl' + (x[i] ? ' on' : ''), x: lx, y: ly + 3.5, 'text-anchor': 'middle' }, NOTES[i]));
+  }
+  for (let i = 0; i < 12; i++) {
+    const [cx, cy] = P(ang(i), 80);
+    const hit = el('circle', { class: 'hit', cx, cy, r: 16 });
+    hit.addEventListener('click', () => { x[i] = x[i] ? 0 : 1; render(); });
+    sv.appendChild(hit);
+  }
+}
+
+/* ---- t : the harmonic template, rotated onto the root ---- */
+function drawT(m) {
+  const sv = document.getElementById('svt'); sv.innerHTML = '';
+  const tmax = Math.max(...t);
+  const settled = m.any && Math.abs(rot - m.win) < 1e-3;
+  const gi = group(sv, 'ink');
+  const gd = group(sv, 'washDot');
+  inkRing(gi, 80);
+  for (let k = 0; k < 12; k++) {
+    if (t[k] <= 0) continue;
+    const a = ang(rot + k);
+    const lit = settled && x[mod(m.win + k, 12)];
+    const [x1, y1] = P(a, 8), [x2, y2] = P(a, 8 + 72 * Math.sqrt(t[k] / tmax));
+    line(gi, x1, y1, x2, y2, lit ? C.win : C.ink, lit ? 2.6 : 1.3, { opacity: lit ? 0.95 : 0.4 });
+    gd.appendChild(el('circle', { cx: x2, cy: y2, r: lit ? 4.6 : 3, fill: lit ? C.win : C.bar }));
+    const [hx, hy] = P(a, 98);
+    sv.appendChild(el('text', { class: 'hnum' + (lit ? ' lit' : ''), x: hx, y: hy + 3, 'text-anchor': 'middle' }, firstN[k]));
+  }
+  for (let i = 0; i < 12; i++) {
+    if (!x[i]) continue;
+    const [cx, cy] = P(ang(i), 80);
+    if (settled && t[mod(i - m.win, 12)] === 0) {
+      gi.appendChild(el('circle', { cx, cy, r: 5, fill: 'none', stroke: C.miss, 'stroke-width': 1.2, 'stroke-dasharray': '2 2' }));
+    } else {
+      gd.appendChild(el('circle', { cx, cy, r: 4, fill: C.on, opacity: 0.85 }));
+    }
+  }
+  // origin
+  gi.appendChild(el('circle', { cx: 120, cy: 120, r: 1.8, fill: C.ink, opacity: 0.6 }));
+}
+
+/* ---- p : posterior over roots ---- */
+function drawP(m) {
+  const sv = document.getElementById('svp'); sv.innerHTML = '';
+  if (m.any) group(sv, 'washShape', { opacity: 0.45 }).appendChild(el('circle', { cx: 120, cy: 120, r: 30 * Math.sqrt(m.p[m.win]) + 6, fill: C.ochre }));
+  const gi = group(sv, 'ink');
+  inkRing(gi, 40);
+  const gb = group(sv, 'washBar');
+  for (let i = 0; i < 12; i++) {
+    const a = ang(i);
+    const len = m.p[i] * 70;
+    const w = i === m.win;
+    if (len > 1.2) {
+      const [x1, y1] = P(a, 46), [x2, y2] = P(a, 46 + len);
+      line(gb, x1, y1, x2, y2, w ? C.win : C.bar, 10, { 'stroke-linecap': 'butt' });
+    } else {
+      const [px, py] = P(a, 46);
+      gi.appendChild(el('circle', { cx: px, cy: py, r: 1.2, fill: C.ink, opacity: 0.35 }));
+    }
+    if (m.p[i] >= 0.06) {
+      const [lx, ly] = P(a, 46 + len + 11);
+      sv.appendChild(el('text', { class: 'plbl' + (w ? ' win' : ''), x: lx, y: ly + 3.5, 'text-anchor': 'middle' }, NOTES[i]));
+    }
+  }
+  if (m.any) {
+    sv.appendChild(el('text', { class: 'big', x: 120, y: 125, 'text-anchor': 'middle' }, NOTES[m.win]));
+    sv.appendChild(el('text', { class: 'pct', x: 120, y: 143, 'text-anchor': 'middle' }, Math.round(m.p[m.win] * 100) + '%'));
+  }
+}
+
+/* ---- harmonic series of r̂ ---- */
+function drawL(m) {
+  const sv = document.getElementById('svl'); sv.innerHTML = '';
+  const L = 24, R = 736, B = 88, T = 16;
+  const X = n => L + Math.log2(n) / Math.log2(N) * (R - L);
+  const gi = group(sv, 'ink'), gd = group(sv, 'washDot');
+  line(gi, L - 8, B, R + 8, B, C.ink, 1, { opacity: 0.55 });
+  for (let o = 2; o <= N; o *= 2) line(gi, X(o), T - 6, X(o), B, C.ink, 0.6, { opacity: 0.25, 'stroke-dasharray': '1 4' });
+  for (let n = 1; n <= N; n++) {
+    const pc = m.any ? mod(m.win + cls(n), 12) : null;
+    const lit = m.any && x[pc];
+    const xx = X(n), yy = B - (B - T) / n;
+    line(gi, xx, B, xx, yy, lit ? C.win : C.ink, lit ? 2.4 : 1.2, { opacity: lit ? 0.95 : 0.4 });
+    gd.appendChild(el('circle', { cx: xx, cy: yy, r: lit ? 4.6 : 3, fill: lit ? C.win : C.bar }));
+    sv.appendChild(el('text', { class: 'nlab', x: xx, y: B + 15, 'text-anchor': 'middle' }, n));
+    if (lit) sv.appendChild(el('text', { class: 'nname', x: xx, y: yy - 9, 'text-anchor': 'middle' }, NOTES[pc]));
+  }
+}
+
+function render() {
+  const m = model();
+  drawX(); drawP(m); drawL(m);
+  // the template turns to the winning root along the shortest path
+  const target = m.any ? m.win : rot;
+  const from = rot, d = mod(target - from + 6, 12) - 6;
+  cancelAnimationFrame(rotAnim);
+  if (Math.abs(d) < 1e-3) { rot = mod(target, 12); drawT(m); }
+  else {
+    const t0 = performance.now(), dur = 180 + 60 * Math.abs(d);
+    const step = now => {
+      const u = Math.min(1, (now - t0) / dur), e = 1 - Math.pow(1 - u, 3);
+      rot = u < 1 ? from + d * e : mod(target, 12);
+      drawT(m);
+      if (u < 1) rotAnim = requestAnimationFrame(step);
+    };
+    rotAnim = requestAnimationFrame(step);
+  }
+  document.querySelectorAll('#presets button').forEach((b, i) => {
+    const pcs = PRESETS[i][1];
+    b.classList.toggle('active', x.every((v, j) => !!v === pcs.includes(j)));
+  });
+}
+
+const pw = document.getElementById('presets');
+PRESETS.forEach(([name, pcs]) => {
+  const b = document.createElement('button');
+  b.textContent = name;
+  b.onclick = () => { x = new Array(12).fill(0); pcs.forEach(i => x[i] = 1); render(); };
+  pw.appendChild(b);
+});
+
+document.getElementById('nIn').oninput = e => {
+  N = +e.target.value; document.getElementById('nVal').textContent = N; buildT(); render();
+};
+document.getElementById('tIn').oninput = e => {
+  tau = +e.target.value; document.getElementById('tVal').textContent = tau.toFixed(2); render();
+};
+
+document.querySelectorAll('.tex').forEach(n => {
+  const tex = n.dataset.tex;
+  try { katex.render(tex, n, { throwOnError: false }); }
+  catch (_) { n.textContent = tex; }
+});
+
+buildT();
+render();
+</script>
+</body>
+</html>
