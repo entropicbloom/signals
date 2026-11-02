@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><style>html,body{margin:0;background:transparent}svg{display:block}</style></head>
+<body>
+<svg id="s" xmlns="http://www.w3.org/2000/svg"></svg>
+<script>
+// ?kind=wash&color=%23f2b8a4&seed=3   or   ?kind=grain
+const q = new URLSearchParams(location.search);
+const s = document.getElementById('s');
+if (q.get('kind') === 'grain') {
+  s.setAttribute('width', 512); s.setAttribute('height', 512);
+  s.innerHTML = `<filter id="g" x="0" y="0" width="100%" height="100%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" seed="2" stitchTiles="stitch" result="fine"/>
+    <feColorMatrix in="fine" type="matrix" values="0 0 0 0 0.25  0 0 0 0 0.22  0 0 0 0 0.15  0 0 0 -3 1.45" result="specks"/>
+    <feTurbulence type="fractalNoise" baseFrequency="0.008" numOctaves="3" seed="9" stitchTiles="stitch" result="coarse"/>
+    <feColorMatrix in="coarse" type="matrix" values="0 0 0 0 0.6  0 0 0 0 0.52  0 0 0 0 0.38  0 0 0 -1.6 0.95" result="blotch"/>
+    <feMerge><feMergeNode in="blotch"/><feMergeNode in="specks"/></feMerge>
+    <feComposite in2="SourceGraphic" operator="in"/>
+  </filter>
+  <rect width="512" height="512" fill="#000" filter="url(#g)" opacity="0.3"/>`;
+} else {
+  const c = q.get('color'), seed = +q.get('seed');
+  s.setAttribute('width', 1000); s.setAttribute('height', 1000);
+  s.innerHTML = `<filter id="w" x="-50%" y="-50%" width="200%" height="200%" color-interpolation-filters="sRGB">
+    <feTurbulence type="fractalNoise" baseFrequency="0.006" numOctaves="4" seed="${seed}" result="warpNoise"/>
+    <feDisplacementMap in="SourceGraphic" in2="warpNoise" scale="90" xChannelSelector="R" yChannelSelector="G" result="shape"/>
+    <feGaussianBlur in="shape" stdDeviation="1.2" result="soft"/>
+    <feMorphology in="soft" operator="erode" radius="14" result="inner"/>
+    <feGaussianBlur in="inner" stdDeviation="12.6" result="innerSoft"/>
+    <feComposite in="soft" in2="innerSoft" operator="arithmetic" k2="1" k3="-0.75" result="rimmed"/>
+    <feTurbulence type="fractalNoise" baseFrequency="0.55" numOctaves="2" seed="${seed + 7}" result="grain"/>
+    <feColorMatrix in="grain" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.7 0.45" result="grainAlpha"/>
+    <feComposite in="rimmed" in2="grainAlpha" operator="in" result="granulated"/>
+    <feTurbulence type="fractalNoise" baseFrequency="0.015" numOctaves="3" seed="${seed + 13}" result="pool"/>
+    <feColorMatrix in="pool" type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 1.8 -0.2" result="poolAlpha"/>
+    <feComposite in="granulated" in2="poolAlpha" operator="arithmetic" k1="0.9" k2="0.45"/>
+  </filter>
+  <g filter="url(#w)"><ellipse cx="500" cy="500" rx="340" ry="300" fill="${c}"/></g>`;
+}
+</script>
+</body></html>

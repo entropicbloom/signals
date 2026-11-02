@@ -62,6 +62,38 @@ body {
     flex-direction: column;
 }
 
+body::before,
+body::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+}
+
+body::before {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='320'%3E%3Cfilter id='g' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' seed='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.25 0 0 0 0 0.22 0 0 0 0 0.15 0 0 0 -3 1.45'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.18'/%3E%3C/svg%3E");
+    mix-blend-mode: multiply;
+}
+
+/* Watercolour washes, pre-rendered from the wash filter in default.html.
+   They sit on the page and scroll with it, spread down its length. */
+body::after {
+    background:
+        url("../images/paper/wash-coral.webp") right -14vmin top 1% / 52vmin auto no-repeat,
+        url("../images/paper/wash-lavender.webp") left -20vmin top 30% / 60vmin auto no-repeat,
+        url("../images/paper/wash-rose.webp") right -12vmin top 58% / 44vmin auto no-repeat,
+        url("../images/paper/wash-coral.webp") left -16vmin top 84% / 46vmin auto no-repeat,
+        url("../images/paper/wash-lavender.webp") right -18vmin bottom -6vmin / 54vmin auto no-repeat;
+    mix-blend-mode: multiply;
+    opacity: 0.3;
+}
+
+:root[data-theme="dark"] body::before,
+:root[data-theme="dark"] body::after {
+    content: none;
+}
+
 header {
     padding: 2rem 1rem;
     text-align: center;
@@ -143,6 +175,11 @@ nav a:hover::after {
     height: 100%;
     z-index: 1;
     pointer-events: none;
+    mix-blend-mode: multiply;
+}
+
+:root[data-theme="dark"] .hero-field {
+    mix-blend-mode: normal;
 }
 
 .lotus {
@@ -166,9 +203,20 @@ nav a:hover::after {
     border-radius: 50% 50% 50% 50% / 80% 80% 20% 20%;
     transform-origin: center bottom;
     transform: rotate(var(--rotation));
-    opacity: 0.9;
+    opacity: 0.95;
+    filter: url(#wash-petal);
+    mix-blend-mode: multiply;
+}
+
+:root[data-theme="dark"] .petal {
+    mix-blend-mode: normal;
     filter: url(#turbulence);
     box-shadow: 0 0 15px rgba(0,0,0,0.1);
+}
+
+:root[data-theme="dark"] .center {
+    filter: none;
+    box-shadow: 0 0 40px rgba(166, 69, 62, 0.3);
 }
 
 .petal:nth-child(1) {
@@ -221,7 +269,7 @@ nav a:hover::after {
     background: radial-gradient(circle, var(--pomegranate) 0%, var(--rust-red) 70%);
     border-radius: 50%;
     z-index: 5;
-    box-shadow: 0 0 40px rgba(166, 69, 62, 0.3);
+    filter: url(#wash-center);
 }
 
 .blog-title {
@@ -289,19 +337,51 @@ nav a:hover::after {
 }
 
 .post-card {
-    background-color: var(--surface);
+    --wash: var(--muted-rose);
+    --brush: url("/assets/images/paper/brush-1.webp");
+    --flip: 1;
     border-radius: 4px;
-    overflow: hidden;
-    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.4s ease;
+    transition: transform 0.3s ease, background-color 0.4s ease;
     position: relative;
+    isolation: isolate;
+}
+
+.post-card:nth-child(4n+2) { --wash: var(--dusty-lavender); --brush: url("/assets/images/paper/brush-2.webp"); --flip: -1; }
+.post-card:nth-child(4n+3) { --wash: var(--faded-coral); --brush: url("/assets/images/paper/brush-3.webp"); --flip: -1; }
+.post-card:nth-child(4n+4) { --brush: url("/assets/images/paper/brush-2.webp"); }
+
+/* A wide watercolour stroke behind the card, pre-rendered as an alpha mask */
+.post-card::before {
+    content: "";
+    position: absolute;
+    inset: -6px -16px;
+    z-index: -1;
+    background-color: var(--wash);
+    -webkit-mask: var(--brush) center / 100% 100% no-repeat;
+    mask: var(--brush) center / 100% 100% no-repeat;
+    transform: scaleX(var(--flip));
+    mix-blend-mode: multiply;
+    opacity: 0.7;
+    transition: opacity 0.3s ease;
 }
 
 .post-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 10px 20px var(--shadow);
 }
 
-.post-card::before {
+.post-card:hover::before {
+    opacity: 0.9;
+}
+
+.post-card[data-href] {
+    cursor: pointer;
+}
+
+:root[data-theme="dark"] .post-card {
+    background-color: var(--surface);
+}
+
+:root[data-theme="dark"] .post-card::before {
     content: none;
 }
 
@@ -392,6 +472,18 @@ footer {
 .post-header .post-meta {
     font-size: 0.9rem;
     margin-bottom: 1rem;
+}
+
+.post-header::after {
+    content: "";
+    display: block;
+    width: 140px;
+    height: 9px;
+    margin: 1.5rem auto 0;
+    border-radius: 5px;
+    background-color: var(--muted-rose);
+    filter: url(#wash-band);
+    opacity: 0.8;
 }
 
 .post-content {
@@ -896,4 +988,55 @@ body.lightbox-open {
 
     .lightbox-prev { left: 0; }
     .lightbox-next { right: 0; }
+}
+
+.blog-title,
+.post-title,
+.content > h2,
+.archive-title,
+.problem-title,
+.post-content h2,
+.post-content h3 {
+    filter: url(#pen);
+}
+
+nav a,
+.theme-toggle,
+.tagline,
+.post-excerpt,
+.post-meta,
+.footer-text,
+.filter-description,
+.post-content p,
+.post-content li,
+.post-content blockquote {
+    filter: url(#pen-fine);
+}
+
+:root[data-theme="dark"] .blog-title,
+:root[data-theme="dark"] .post-title,
+:root[data-theme="dark"] .content > h2,
+:root[data-theme="dark"] .archive-title,
+:root[data-theme="dark"] .problem-title,
+:root[data-theme="dark"] .post-content h2,
+:root[data-theme="dark"] .post-content h3,
+:root[data-theme="dark"] nav a,
+:root[data-theme="dark"] .theme-toggle,
+:root[data-theme="dark"] .tagline,
+:root[data-theme="dark"] .post-excerpt,
+:root[data-theme="dark"] .post-meta,
+:root[data-theme="dark"] .footer-text,
+:root[data-theme="dark"] .filter-description,
+:root[data-theme="dark"] .post-content p,
+:root[data-theme="dark"] .post-content li,
+:root[data-theme="dark"] .post-content blockquote {
+    filter: none;
+}
+
+:root[data-theme="dark"] .post-header::after {
+    content: none;
+}
+
+:root[data-theme="dark"] .post-card:hover {
+    box-shadow: 0 10px 20px var(--shadow);
 }

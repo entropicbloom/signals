@@ -49,14 +49,53 @@
     
     {% include footer.html %}
     
-    <svg width="0" height="0">
+    <svg width="0" height="0" style="position: absolute" aria-hidden="true">
         <filter id="turbulence">
             <feTurbulence baseFrequency="0.01" numOctaves="3" result="turbulence" />
             <feDisplacementMap in="SourceGraphic" in2="turbulence" scale="10" />
         </filter>
+        <defs id="wash-defs"></defs>
     </svg>
+    <script>
+    // Watercolour washes (ported from ambiguity-video/src/paint.tsx): a wobbly
+    // edge, a darker rim where pigment collects, and paper granulation.
+    (() => {
+      const wash = (id, seed, freq, warp, rim, pale) => `
+        <filter id="${id}" x="-50%" y="-50%" width="200%" height="200%" color-interpolation-filters="sRGB">
+          <feTurbulence type="fractalNoise" baseFrequency="${freq}" numOctaves="4" seed="${seed}" result="warpNoise"/>
+          <feDisplacementMap in="SourceGraphic" in2="warpNoise" scale="${warp}" xChannelSelector="R" yChannelSelector="G" result="shape"/>
+          <feGaussianBlur in="shape" stdDeviation="1" result="soft"/>
+          <feMorphology in="soft" operator="erode" radius="${rim}" result="inner"/>
+          <feGaussianBlur in="inner" stdDeviation="${rim * 0.9}" result="innerSoft"/>
+          <feComposite in="soft" in2="innerSoft" operator="arithmetic" k2="1" k3="${-pale}" result="rimmed"/>
+          <feTurbulence type="fractalNoise" baseFrequency="0.55" numOctaves="2" seed="${seed + 7}" result="grain"/>
+          <feColorMatrix in="grain" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.7 0.45" result="grainAlpha"/>
+          <feComposite in="rimmed" in2="grainAlpha" operator="in" result="granulated"/>
+          <feTurbulence type="fractalNoise" baseFrequency="${freq * 2.5}" numOctaves="3" seed="${seed + 13}" result="pool"/>
+          <feColorMatrix in="pool" type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 1.8 -0.2" result="poolAlpha"/>
+          <feComposite in="granulated" in2="poolAlpha" operator="arithmetic" k1="0.9" k2="0.45"/>
+        </filter>`;
+      // Pen on paper: a fixed tremor along the strokes, and fine grain where
+      // the ink does not fully take. `grain` sets how patchy the ink is.
+      const pen = (id, seed, tremor, grain) => `
+        <filter id="${id}" x="-5%" y="-15%" width="110%" height="130%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="2" seed="${seed}" result="n"/>
+          <feDisplacementMap in="SourceGraphic" in2="n" scale="${tremor}" xChannelSelector="R" yChannelSelector="G" result="d"/>
+          <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="2" seed="${seed + 4}" result="g"/>
+          <feColorMatrix in="g" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 ${-grain} ${1 + grain * 0.55}" result="ga"/>
+          <feComposite in="d" in2="ga" operator="in"/>
+        </filter>`;
+      document.getElementById('wash-defs').innerHTML =
+        wash('wash-petal', 3, 0.02, 12, 6, 0.35) +
+        wash('wash-center', 11, 0.03, 14, 5, 0.5) +
+        wash('wash-band', 21, 0.05, 6, 1.5, 0.35) +
+        pen('pen', 5, 1.8, 1.5) +
+        pen('pen-fine', 8, 0.7, 0.8);
+    })();
+    </script>
 
     <script>
+    // Dark mode keeps the original hero.
     // Hero dot-matrix: a near-regular lattice, mostly hidden, with travelling
     // patches of visibility. Order condenses into small dispersed lotus blooms
     // that emerge and dissolve; a central guard keeps them clear of the lotus.
@@ -179,9 +218,13 @@
       }
       const minDim = () => Math.min(W, H);
 
+      const isDark = () => document.documentElement.getAttribute('data-theme') === 'dark';
       function frame(now) {
-        if (!W || !H) { if (!reduce) requestAnimationFrame(frame); return; }
+        if (!W || !H || !isDark()) { if (!reduce) requestAnimationFrame(frame); return; }
         const t = reduce ? 8 : now / 1000;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.globalAlpha = 1;
         ctx.clearRect(0, 0, W, H);
 
         const md = minDim();
@@ -256,7 +299,228 @@
       window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(build, 150); });
       build();
       requestAnimationFrame(frame);
+      if (reduce) new MutationObserver(() => requestAnimationFrame(frame))
+        .observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
     })();
+    </script>
+
+    <script>
+    // Light mode hero: drops of paint land beside the lotus and spread into damp paper.
+    // Each drop is a pigment density field: a dense centre where it landed,
+    // a paler halo, a front fringed with fine radial streaks where water
+    // wicks along the fibres, and a darker ring where pigment collects as it
+    // dries. A drop is recomputed while it spreads, then kept as an image
+    // that dries lighter and fades.
+    (() => {
+      const canvas = document.getElementById('hero-field');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const lotusEl = document.querySelector('.lotus');
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      // deeper versions of the site's rose, coral and lavender, plus rust
+      const PALETTE = [
+        [198, 124, 128], [226, 146, 124], [164, 140, 192],
+        [198, 124, 128], [164, 140, 192], [166, 69, 62],
+      ];
+      const MAX_DROPS = 4, SPAWN_EVERY = 3.4, LIFE = 20, SPREAD = 6, BINS = 720;
+
+      let s = (Date.now() % 100000) + 1;
+      const rand = () => (s = (s * 16807) % 2147483647) / 2147483647;
+      const smoothstep = (a, b, x) => { const t = Math.max(0, Math.min(1, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
+
+      let W = 0, H = 0, dpr = 1, drops = [], lastSpawn = -Infinity, tick = 0;
+      let guard = { x: 0, y: 0, rx: 1, ry: 1 };
+
+      function build() {
+        const rect = canvas.getBoundingClientRect();
+        if (!rect.width || !rect.height) return;
+        dpr = Math.min(window.devicePixelRatio || 1, 2);
+        W = rect.width; H = rect.height;
+        canvas.width = Math.round(W * dpr);
+        canvas.height = Math.round(H * dpr);
+        const lr = lotusEl && lotusEl.getBoundingClientRect();
+        guard = lr && lr.width && lr.height
+          ? { x: lr.left - rect.left + lr.width / 2, y: lr.top - rect.top + lr.height / 2, rx: lr.width * 0.5, ry: lr.height * 0.5 }
+          : { x: W / 2, y: H / 2, rx: W * 0.3, ry: H * 0.3 };
+        drops = [];
+        lastSpawn = -Infinity;
+      }
+
+      // circular smoothing of an angular profile
+      function smooth(a, passes) {
+        for (let k = 0; k < passes; k++) {
+          const b = a.slice();
+          for (let i = 0; i < BINS; i++) a[i] = (b[(i + BINS - 1) % BINS] + b[i] * 2 + b[(i + 1) % BINS]) / 4;
+        }
+        return a;
+      }
+      function normalize(a) {
+        let lo = Infinity, hi = -Infinity;
+        for (const v of a) { lo = Math.min(lo, v); hi = Math.max(hi, v); }
+        for (let i = 0; i < BINS; i++) a[i] = (a[i] - lo) / (hi - lo || 1);
+        return a;
+      }
+
+      function makeDrop(t, x, y, Rf, col) {
+        const G = Math.ceil(Rf * 1.45), N = 2 * G;
+        const c = document.createElement('canvas');
+        c.width = c.height = N;
+        const g = c.getContext('2d');
+        const img = g.createImageData(N, N);
+        for (let p = 0; p < N * N; p++) { img.data[p * 4] = col[0]; img.data[p * 4 + 1] = col[1]; img.data[p * 4 + 2] = col[2]; }
+
+        // coarse value noise for the mottled interior
+        const M = 10, cell = new Float32Array((M + 1) * (M + 1)).map(() => rand());
+        const rr = new Float32Array(N * N), bin = new Uint16Array(N * N), mot = new Float32Array(N * N), str = new Float32Array(N * N);
+        // fibre streaks: fine across the angle, short along the radius
+        const K = 8, fib = Array.from({ length: K + 1 }, () => normalize(smooth(Float32Array.from({ length: BINS }, rand), 5)));
+        for (let j = 0; j < N; j++) for (let i = 0; i < N; i++) {
+          const p = j * N + i, dx = (i + 0.5 - G) / Rf, dy = (j + 0.5 - G) / Rf;
+          rr[p] = Math.hypot(dx, dy);
+          bin[p] = Math.floor((Math.atan2(dy, dx) + Math.PI) / (2 * Math.PI) * BINS) % BINS;
+          const u = i / N * M, v = j / N * M, i0 = u | 0, j0 = v | 0, fu = u - i0, fv = v - j0;
+          const a = cell[j0 * (M + 1) + i0], b = cell[j0 * (M + 1) + i0 + 1];
+          const cc = cell[(j0 + 1) * (M + 1) + i0], d = cell[(j0 + 1) * (M + 1) + i0 + 1];
+          mot[p] = (a + (b - a) * fu) * (1 - fv) + (cc + (d - cc) * fu) * fv;
+          const kr = Math.min(K - 1, rr[p] / 1.45 * K), k0 = kr | 0, fk = kr - k0;
+          str[p] = fib[k0][bin[p]] * (1 - fk) + fib[k0 + 1][bin[p]] * fk;
+        }
+
+        // the front: a few broad lobes plus fine hairs from the paper fibres
+        const lobe = new Float32Array(BINS), ph = [rand() * 6.3, rand() * 6.3, rand() * 6.3];
+        for (let i = 0; i < BINS; i++) {
+          const a = i / BINS * Math.PI * 2;
+          lobe[i] = 0.08 * Math.sin(2 * a + ph[0]) + 0.06 * Math.sin(3 * a + ph[1]) + 0.04 * Math.sin(5 * a + ph[2]);
+        }
+        // 30 to 50 soft tongues of different width and length, as in photos of drops on damp paper
+        const hair = new Float32Array(BINS);
+        for (let k = 0, n = 30 + Math.floor(rand() * 20); k < n; k++) {
+          const c0 = rand() * BINS, sd = 4 + rand() * 7, h = Math.pow(rand(), 1.5);
+          for (let i = -30; i <= 30; i++) {
+            const j = (Math.round(c0) + i + BINS) % BINS;
+            hair[j] = Math.max(hair[j], h * Math.exp(-(i * i) / (2 * sd * sd)));
+          }
+        }
+        normalize(smooth(hair, 1));
+
+        return { x, y, Rf, G, N, c, g, img, rr, bin, mot, str, lobe, hair, born: t, settled: false };
+      }
+
+      function paint(d, age) {
+        const rho = 0.12 + 0.88 * (1 - Math.exp(-age / 1.5));
+        const ring = smoothstep(2.5, SPREAD, age);
+        const core = 1.1 * Math.exp(-age / 1.3);
+        const halo = 0.6 / (0.3 + rho);
+        const { rr, bin, mot, str, lobe, hair } = d, px = d.img.data;
+        for (let p = 0, n = d.N * d.N; p < n; p++) {
+          const r = rr[p];
+          if (r > 1.43) { px[p * 4 + 3] = 0; continue; }
+          const b = bin[p];
+          const base = rho * (1 + lobe[b]);
+          const f = base + rho * 0.3 * hair[b] * Math.min(1, r / rho);
+          if (r >= f) { px[p * 4 + 3] = 0; continue; }
+          // tongues beyond the main edge are paler and feathered; the ring follows the main edge
+          const u = r / f, gap = (f - r) / 0.045, rim = (base - r) / 0.045;
+          let a = halo * (1 - 0.6 * u * u) * (1 + 0.45 * (str[p] - 0.5) * smoothstep(0.45, 1, u));
+          a += core * Math.exp(-r * r / 0.025);
+          a *= (0.72 + 0.56 * mot[p]) * smoothstep(0, 2.5, gap) * (1 - 0.35 * smoothstep(base, f, r));
+          a += ring * 0.7 * Math.exp(-rim * rim * 0.6);
+          px[p * 4 + 3] = Math.min(255, a * 255);
+        }
+        d.g.putImageData(d.img, 0, 0);
+      }
+
+      function spawn(t) {
+        const md = Math.min(W, H);
+        for (let tries = 0; tries < 30; tries++) {
+          const Rf = md * (0.085 + rand() * 0.07);
+          const ext = Rf * 1.45;
+          const x = ext * 0.4 + rand() * (W - ext * 0.8), y = ext * 0.4 + rand() * (H - ext * 0.8);
+          const nx = (x - guard.x) / (guard.rx + ext), ny = (y - guard.y) / (guard.ry + ext);
+          if (Math.hypot(nx, ny) < 1) continue;
+          if (drops.some(o => Math.hypot(o.x - x, o.y - y) < (o.Rf + Rf) * 1.15)) continue;
+          drops.push(makeDrop(t, x, y, Rf, PALETTE[Math.floor(rand() * PALETTE.length)]));
+          return;
+        }
+      }
+
+      // lands, spreads, dries lighter, fades
+      function alpha(age) {
+        if (age < 0.3) return age / 0.3;
+        const dried = 1 - 0.25 * smoothstep(SPREAD - 1, SPREAD + 2, age);
+        return dried * (1 - smoothstep(LIFE - 7, LIFE, age));
+      }
+
+      const isDark = () => document.documentElement.getAttribute('data-theme') === 'dark';
+      function draw(t) {
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.globalCompositeOperation = 'multiply';
+        for (const d of drops) {
+          const a = alpha(t - d.born);
+          if (a <= 0) continue;
+          ctx.globalAlpha = a;
+          ctx.drawImage(d.c, (d.x - d.G) * dpr, (d.y - d.G) * dpr, d.N * dpr, d.N * dpr);
+        }
+        ctx.globalAlpha = 1;
+      }
+
+      function frame(now) {
+        if (!W || !H || isDark()) { requestAnimationFrame(frame); return; }
+        const t = now / 1000;
+        drops = drops.filter(d => t - d.born < LIFE);
+        if (drops.length < MAX_DROPS && t - lastSpawn > SPAWN_EVERY * (0.7 + rand() * 0.6)) {
+          spawn(t);
+          lastSpawn = t;
+        }
+        // spreading drops are recomputed at half the frame rate
+        if ((tick++ & 1) === 0) {
+          for (const d of drops) {
+            if (d.settled) continue;
+            const age = t - d.born;
+            paint(d, Math.min(age, SPREAD));
+            if (age >= SPREAD) d.settled = true;
+          }
+        }
+        draw(t);
+        requestAnimationFrame(frame);
+      }
+
+      function still() {
+        if (!W || !H || isDark()) return;
+        if (!drops.length) {
+          for (let i = 0; i < MAX_DROPS; i++) spawn(-SPREAD - 1);
+          for (const d of drops) paint(d, SPREAD);
+        }
+        draw(0);
+      }
+
+      let rt;
+      const rebuild = () => { build(); if (reduce) still(); };
+      window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(rebuild, 150); });
+      window.addEventListener('load', rebuild);
+      build();
+      if (reduce) {
+        still();
+        new MutationObserver(still).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+      } else requestAnimationFrame(frame);
+    })();
+    </script>
+
+    <script>
+    // The whole card opens its title link. A stretched link would not work
+    // here: the ink filter on the title confines absolutely positioned
+    // children to the title.
+    document.querySelectorAll('.post-card').forEach(function (card) {
+      var link = card.querySelector('.post-title a');
+      if (!link) return;
+      card.setAttribute('data-href', '');
+      card.addEventListener('click', function (e) {
+        if (e.target.closest('a') || String(window.getSelection())) return;
+        link.click();
+      });
+    });
     </script>
 
     <script>

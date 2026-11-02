@@ -16,7 +16,7 @@ A personal blog at [entropicbloom.com](https://entropicbloom.com). The tagline i
 | File | Purpose |
 |------|---------|
 | `assets/css/style.css` | All styles and animations |
-| `_layouts/default.html` | Root HTML shell — includes static overlay, lotus, SVG turbulence filter |
+| `_layouts/default.html` | Root HTML shell — lotus, SVG filters (turbulence, washes, pen), both hero animations, card click handling |
 | `_layouts/post.html` | Single post template |
 | `_includes/header.html` | Nav and site title |
 | `index.html` | Home page — shows 4 most recent posts as cards, lotus enabled |
@@ -51,7 +51,10 @@ A personal blog at [entropicbloom.com](https://entropicbloom.com). The tagline i
 - Warm, muted, slightly aged palette — not clinical, not loud
 - Subtle over obvious. Effects should feel textural, not decorative.
 - The site has a deliberate "signal from static" aesthetic — the name, the tagline, and the visual approach all tie into this. Analog/organic over digital/sharp.
-- Existing ambient effects: global fractal noise on `body::before`, static flicker overlay on `lotus-container`, animated lotus petals with SVG turbulence displacement, animated waves.
+- Light mode is watercolour (technique ported from the ambiguity-video repo's `src/paint.tsx`): paper grain on `body::before`, pre-rendered washes on `body::after` that scroll with the page, lotus petals through the `wash-petal` filter, cards on pre-rendered watercolour strokes (`assets/images/paper/brush-*.webp`, used as masks), ink filters `pen` / `pen-fine` on text, and a hero canvas where paint drops spread into damp paper and dry.
+- Dark mode keeps the original design: the dot-matrix hero, turbulence-displaced petals, flat cards, no paper effects. The watercolour rules are switched off under `:root[data-theme="dark"]`.
+- The wash and stroke images are rendered once from SVG filters by the pages in `_paint/` (see its README); regenerate them rather than editing the WebP files.
+- Local preview: open `http://localhost:4000`, not `127.0.0.1`. The stylesheet loads from `localhost` via `absolute_url`, and CSS masks from another origin are blocked, so the card strokes would not show.
 
 ## Post front matter
 
